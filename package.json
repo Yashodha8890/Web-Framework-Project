@@ -1,0 +1,30 @@
+{
+  "name": "web-framework-project",
+  "version": "1.0.0",
+  "description": "Web Framework Project",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yashodha8890/Web-Framework-Project.git"
+  },
+  "author": "Yashodha Amarasinghe",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Yashodha8890/Web-Framework-Project/issues"
+  },
+  "homepage": "https://github.com/Yashodha8890/Web-Framework-Project#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "express-handlebars": "^8.0.2",
+    "handlebars": "^4.7.8",
+    "mongoose": "^8.13.2"
+  }
+}
