@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const exphbs = require('express-handlebars');
 const ActivityCategories = require('./models/ActivityCategories');
 const UserRegistration = require('./models/UserRegistration');
+const AddActivity = require('./models/AddActivity');
 require('dotenv').config();
 
 const app = express();
@@ -59,9 +60,20 @@ app.get('/activityTracker',(req,res) => {
     });
 });
 
-app.post('/saveCategory', (req,res) => {
+app.post('/saveCatergory', async(req,res) => {
     console.log(req.body);
-    res.send('Added a category');
+    try{
+        const newAddActivity = new AddActivity(req.body);
+        await newAddActivity.save();
+        res.send('Added a category');
+    }
+
+    catch(err)
+    {
+        console.log(err);
+        res.status(500).send('Error saving User!!')
+    }
+    
 })
 
 app.post('/users', async(req,res) => {
