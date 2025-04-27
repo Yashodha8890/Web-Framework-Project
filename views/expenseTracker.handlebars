@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Record Expense</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="/css/recordExpense.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container-activity">
+    <div class="row">
+      <div class="col-sm-3 flex flex-col">
+        <nav class="nav flex flex-col">
+          <a href="#"><img src="/images/Logo DRT.jpg" alt="Logo"></a>
+          <a class="nav-link" href="index.handlebars">Home</a>
+          <a class="nav-link" href="/activityTracker">Activity Tracker</a>
+          <a class="nav-link" href="/addExpense">Money Tracker</a>
+          <a class="nav-link" href="#">Dashboard</a>
+          <a class="nav-link" href="#">Profile</a>
+        </nav>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-xl p-6 max-w-2xl w-full">
+        <div class="flex justify-between items-center mb-4">
+          <button class="text-xl">
+            <a class="btn-back" href="/activityTracker">←</a>
+          </button>
+          <h1 class="text-xl font-bold">Record Expense</h1>
+          <button class="border p-2 rounded-lg text-sm">
+            <input type="date" id="today" name="today">
+          </button>
+        </div>
+
+        <form action="/save-expense" method="POST" enctype="multipart/form-data">
+
+          <div class="mb-4">
+            <label class="font-medium">Amount Spent</label>
+            <input type="number" name="amount" class="input-field" placeholder="$">
+            <div class="flex gap-2 mt-2">
+              {{#each quickAmounts}}
+                <button type="button" class="quick-amount">${{this}}</button>
+              {{/each}}
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="font-medium">Category</label>
+            <select name="category" class="input-field mt-2">
+              <option>Food</option>
+              <option>Transport</option>
+              <option>Housing</option>
+              <option>Utilities</option>
+              <option>Entertainment</option>
+              <option>Travel</option>
+              <option>Shopping</option>
+            </select>
+            <div class="flex flex-wrap gap-2 mt-2">
+              {{#each categories}}
+                <button type="button" class="category-btn">
+                  {{icon}} {{name}}
+                </button>
+              {{/each}}
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="font-medium">Paid With</label>
+            <select name="paymentMethod" class="input-field mt-2">
+              <option>Cash</option>
+              <option>Credit Card</option>
+              <option>Debit Card</option>
+              <option>Bank Transfer</option>
+              <option>Digital Wallet</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="font-medium">Notes (Optional)</label>
+            <textarea name="notes" class="input-field mt-2" placeholder="E.g. Lunch at Joe’s Diner"></textarea>
+          </div>
+
+          <div class="mb-4">
+            <label class="font-medium">Upload Receipt (Optional)</label>
+            <input type="file" name="receipt" class="block mt-2">
+          </div>
+
+          <div class="flex items-center gap-2 mb-6">
+            <input type="checkbox" name="recurring" id="recurring">
+            <label for="recurring">This is a recurring expense</label>
+          </div>
+
+          <button type="submit" class="submit-btn">Save Expense</button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
