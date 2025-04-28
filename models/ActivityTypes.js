@@ -1,18 +1,19 @@
 const mongoose = require('mongoose');
 
 const activityTypeSchema = new mongoose.Schema({
-    activityTypeName : {
-        type:String,
-        required:true
-    }, 
-    activityDescription : {
+    activityCatergory : {
         type:String,
         required:true
     },
-    activityCategory : {
+    ActivityTypeName : {
+        type:String,
+        required:true
+    }, 
+    ActivityDuration : {
         type:String,
         required:true
     }
+    
 });
 
-module.exports = mongoose.model("activityType", activityTypeSchema);
+module.exports = mongoose.model("ActivityTypes", activityTypeSchema);

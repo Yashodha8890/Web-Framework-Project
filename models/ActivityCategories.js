@@ -5,7 +5,7 @@ const activityCategorySchema = new mongoose.Schema({
         type:String,
         required:true
     }, 
-    activityDuration : {
+    activityDescription : {
         type:String,
         required:true
     }

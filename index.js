@@ -4,6 +4,7 @@ const exphbs = require('express-handlebars');
 const ActivityCategories = require('./models/ActivityCategories');
 const UserRegistration = require('./models/UserRegistration');
 const AddActivity = require('./models/AddActivity');
+const ActivityTypes = require('./models/ActivityTypes');
 
 require('dotenv').config();
 
@@ -61,23 +62,7 @@ app.get('/activityTracker',(req,res) => {
     });
 });
 
-/* app.post('/saveCatergory', async(req,res) => {
-    console.log(req.body);
-    try{
-        const newAddActivity = new AddActivity(req.body);
-        await newAddActivity.save();
-        res.send('Added a category');
-    }
-
-    catch(err)
-    {
-        console.log(err);
-        res.status(500).send('Error saving User!!')
-    }
-    
-});
- */
-
+//Save activity Categories
 app.post('/saveCatergory', async(req,res) => {
     console.log(req.body);
     try{
@@ -90,10 +75,42 @@ app.post('/saveCatergory', async(req,res) => {
     {
         console.log(err);
         res.status(500).send('Error saving User!!')
-    }
-    
+    }    
 });
 
+//Save activity types
+app.post('/saveActivityType', async(req,res) => {
+    console.log(req.body);
+    try{
+        const newActivityTypes = new ActivityTypes(req.body);
+        await newActivityTypes.save();
+        res.send('Added an Activity types');
+    }
+
+    catch(err)
+    {
+        console.log(err);
+        res.status(500).send('Error saving Activity types!!')
+    }    
+});
+
+//Save Activity
+ app.post('/saveActivity', async(req,res) => {
+    console.log(req.body);
+    try{
+        const newAddActivity = new AddActivity(req.body);
+        await newAddActivity.save();
+        res.send('Added an Activity category');
+    }
+
+    catch(err)
+    {
+        console.log(err);
+        res.status(500).send('Error saving new activity!!')
+    }   
+});
+
+//Save users
 app.post('/users', async(req,res) => {
     try
     {

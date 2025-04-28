@@ -1,19 +1,44 @@
-/* const mongoose = require('mongoose');
+ const mongoose = require('mongoose');
 
-const activityCatergorySchema = new mongoose.Schema({
+const activitySchema = new mongoose.Schema({
     activityName  : {
         type:String,
         required:true
     }, 
-    activityDuration : {
+    activityDescription : {
         type:String,
         required:true
+    },
+    ActivityPlannedDate :{
+        type: Date,
+        required:true
+    },
+    ActivityStartTime : {
+        type: String,
+        required : true
+    },
+    activityStatus: {
+        type: String,
+        required: false,
+        default: "Pending"
+    },
+    activityCatergory: {
+        type: String,
+        required: true
+    },
+    activityType: {
+        type: String, 
+        required: true
+    },
+    activityPriority: {
+        type: String,
+        required: true
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
+
 });
 
-
-//module.exports = mongoose.model("ActivityCategories", activityCatergorySchema);
-// Prevent overwriting the model if it's already compiled
-const ActivityCategories = mongoose.models.ActivityCategories || mongoose.model('ActivityCategories', activityCategorySchema);
-
-module.exports = ActivityCategories; */
+module.exports = mongoose.model("Activities", activitySchema); 

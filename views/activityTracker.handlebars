@@ -26,7 +26,7 @@
                 <div class="col-lg-6">
                     <div class="containerSaveActivity">
                     <h4 class="activity-title">Save Your Activity</h4>
-                    <form class="row g-3">
+                    <form class="row g-3" action="/saveActivity" method="post">
                         <div class="col-sm-3">
                             <label for="inputActivityName" class="form-label">Activity Title :</label><br>
                             <label for="inputActivityDescription" class="form-label">Description :</label><br><br>
@@ -39,30 +39,41 @@
                             <label for="Priority">Priority :</label><br>                            
                         </div>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" id="inputFname">                            
-                            <input type="text" class="form-control" id="inputLname">
-                            <input type="date" id="activityPlannedDate" name="ActivityPlannedDate"><br>
-                            <input type="time" id="activityStartTime" name="ActStartTime"><br>
-                            <input type="time" id="activityEndTime" name="ActEndTime">
-                            <input class="form-control" type="text" placeholder="Pending" aria-label="Disabled input example" disabled>                            
-                            <select id="ActivityCatergory" name="Activity Catergory">
-                                <option value="volvo">Cat 1</option>
-                                <option value="saab">Cat 2</option>
-                                <option value="fiat">Cat 3</option>
-                                <option value="audi">Cat 4</option>
+                            <input type="text" class="form-control" id="activityName" name="activityName" required>                            
+                            <input type="text" class="form-control" id="activityDescription" name="activityDescription" required>
+                            <input type="date" id="activityPlannedDate" name="ActivityPlannedDate" required><br>
+                            <input type="time" id="activityStartTime" name="ActivityStartTime"><br>
+                            <input type="time" id="activityEndTime" name="ActivityEndTime">
+                            <input class="form-control" type="text" placeholder="Pending" aria-label="Disabled input example" name="activityStatus" disabled>                            
+                            <select id="ActivityCatergory" name="activityCatergory" required> 
+                                <option value="select">Select</option>
+                                <option value="wellness">Wellness</option>
+                                <option value="fitness">Fitness</option>
+                                <option value="health">Health</option>
+                                <option value="work">Work</option>
+                                <option value="study">Study</option>
+                                <option value="personalDevelopment">Personal Development</option>
+                                <option value="household">Houlshold</option>
+                                <option value="Leisure">Leisure</option>
                             </select>
                                 <br>
-                            <select id="ActivityType" name="Activity Type">
-                                <option value="volvo">Type 1</option>
-                                <option value="saab">Type 2</option>
-                                <option value="fiat">Type 3</option>
-                                <option value="audi">Type 4</option>
+                            <select id="ActivityType" name="activityType" required>
+                                <option value="select">Select</option>
+                                <option value="meditation">Meditation</option>
+                                <option value="journaling">Journaling</option>
+                                <option value="gym Workout">Gym Workout</option>
+                                <option value="running">Running</option>
+                                <option value="stretching">Stretching</option>
+                                <option value="sports">Sports</option>
+                                <option value="mealTracking">Meal Tracking</option>
+                                <option value="waterIntake">Water Intake</option>
                             </select>
                             <br>
-                            <select id="ActivityPriority" name="Activity Priority">
-                                <option value="volvo">High</option>
-                                <option value="saab">Medium</option>
-                                <option value="fiat">Low</option>
+                            <select id="ActivityPriority" name="activityPriority" required>
+                                <option value="select">Select</option>
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
                             </select>
                         </div>   
                         <div class="col-12">
@@ -77,13 +88,13 @@
                     <div class="containerSaveActivityCategory">
                     <h4 class="activity-title">Save Activity Categories</h4>
                     <div class="row">
-                        <div class="col-sm-3">
-                            <label for="inputActivityCatName" class="form-label">Activity Catergory Name</label><br>
-                            <label for="inputDuration" class="form-label">Activity Duration</label>
+                        <div class="col-sm-4">
+                            <label for="activityCategoryName" class="form-label">Activity Catergory Name</label><br>
+                            <label for="categoryDescription" class="form-label">Activity Descrption</label>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-8">
                             <input type="text" class="form-control" id="activityCatName" name="activityCatergoryname" required>                            
-                            <input type="text" class="form-control" id="activityDuration" name="activityDuration" required>
+                            <input type="text" class="form-control" id="activityCatDescrption" name="activityDescription" required>
                         </div>
                         <div class="col-12">
                             <button type="submit" class="btn btn-primary">Save</button>
@@ -93,17 +104,30 @@
                     </div>
                     </form>
                 <div class="row">
-                    <form>
+                    <form action="/saveActivityType" method="post">
                          <div class="containerSaveActivityCategory">
                             <h4 class="activity-title">Save Activity types</h4>
                             <div class="row">
-                                <div class="col-sm-3">
-                                    <label for="inputActivityTypeName" class="form-label">Activity Type Name</label><br>
-                                    <label for="inputDuration" class="form-label">Activity Duration</label>
+                                <div class="col-sm-4">
+                                    <label for="activityCategory" class="form-label">Select Activity Category :</label>
+                                    <label for="activityTypeName" class="form-label">Activity Type Name :</label><br>
+                                    <label for="activityDuration" class="form-label">Activity Duration :</label><br>
+                                    
                                 </div>
-                                <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="inputActivityTypeName">                            
-                                    <input type="text" class="form-control" id="inputDuration">
+                                <div class="col-sm-8">
+                                    <select id="ActivityCatergory" name="activityCatergory" required> 
+                                        <option value="select">Select</option>
+                                        <option value="wellness">Wellness</option>
+                                        <option value="fitness">Fitness</option>
+                                        <option value="health">Health</option>
+                                        <option value="work">Work</option>
+                                        <option value="study">Study</option>
+                                        <option value="personalDevelopment">Personal Development</option>
+                                        <option value="household">Houseshold</option>
+                                        <option value="Leisure">Leisure</option>
+                                    </select>
+                                    <input type="text" class="form-control" id="ActivityTypeName" name="ActivityTypeName" required>    
+                                    <input type="text" class="form-control" id="ActivityDuration" name="ActivityDuration" required>                        
                                 </div>
                                 <div class="col-12">
                                     <button type="submit" class="btn btn-primary">Save</button>
