@@ -3,7 +3,7 @@
         <div class="col-sm-3 flex-column">
             <nav class="nav flex-column">
             <a href="#"><img src="images/Logo DRT.jpg" alt="Logo" href="index.handlebars"></a>
-            <a class="btn btn-primary" style="font-size:25px"href="index.handlebars">Home</a>
+            <a class="btn btn-primary" style="font-size:25px"href="http://localhost:3000/home">Home</a>
             <a class="btn btn-primary" style="font-size:25px"href="">Activity Tracker</a>
             <a class="btn btn-primary" style="font-size:25px"href="">Money Tracker</a>
             <a class="btn btn-primary" style="font-size:25px"href="">Dashboard</a>
@@ -42,8 +42,8 @@
                             <input type="text" class="form-control" id="activityName" name="activityName" required>                            
                             <input type="text" class="form-control" id="activityDescription" name="activityDescription" required>
                             <input type="date" id="activityPlannedDate" name="ActivityPlannedDate" required><br>
-                            <input type="time" id="activityStartTime" name="ActivityStartTime"><br>
-                            <input type="time" id="activityEndTime" name="ActivityEndTime">
+                            <input type="time" id="activityStartTime" name="ActivityStartTime" required><br>
+                            <input type="time" id="activityEndTime" name="ActivityEndTime" required><br>
                             <input class="form-control" type="text" placeholder="Pending" aria-label="Disabled input example" name="activityStatus" disabled>                            
                             <select id="ActivityCatergory" name="activityCatergory" required> 
                                 <option value="select">Select</option>
@@ -140,42 +140,44 @@
                 </div>
                 </div>
             <div class="row">
-                <div class="conatinerActivityList">
-                    <h4 class="activity-title">Activity List</h4>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">First</th>
-                            <th scope="col">Last</th>
-                            <th scope="col">Handle</th>
-                            </tr>
-                        </thead>
-                    <tbody>
-                        <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        </tr>
-                        <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                        </tr>
-                        <tr>
-                        <th scope="row">3</th>
-                        <td>John</td>
-                        <td>Doe</td>
-                        <td>@social</td>
-                        </tr>
-                    </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>                      
-            </div>           
-        </div>
-    </div> 
-</div>     
+    <div class="containerActivityList">
+        <h4 class="activity-title">Activity List</h4>
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Activity Name</th>
+                    <th>Description</th>
+                    <th>Planned Date</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Status</th>
+                    <th>Category</th>
+                    <th>Type</th>
+                    <th>Priority</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each activities}}
+                    <tr>
+                        <td>{{id}}</td>
+                        <td>{{activityName}}</td>
+                        <td>{{activityDescription}}</td>
+                        <td>{{ActivityPlannedDate}}</td>
+                        <td>{{ActivityStartTime}}</td>
+                        <td>{{ActivityEndTime}}</td>
+                        <td>{{activityStatus}}</td>
+                        <td>{{activityCatergory}}</td>
+                        <td>{{activityType}}</td>
+                        <td>{{activityPriority}}</td>
+                        <td>
+                            <button class="btn btn-primary">Edit</button>
+                            <button class="btn btn-danger">Delete</button>
+                        </td>
+                    </tr>
+                {{/each}}
+            </tbody>
+    </table>
+    </div>
+</div>

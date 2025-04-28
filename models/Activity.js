@@ -1,4 +1,4 @@
- const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 const activitySchema = new mongoose.Schema({
     activityName  : {
@@ -14,6 +14,10 @@ const activitySchema = new mongoose.Schema({
         required:true
     },
     ActivityStartTime : {
+        type: String,
+        required : true
+    },
+    ActivityEndTime : {
         type: String,
         required : true
     },
@@ -38,7 +42,5 @@ const activitySchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
-
 });
-
 module.exports = mongoose.model("Activities", activitySchema); 
