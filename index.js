@@ -90,7 +90,6 @@ app.get('/home', (req, res) => {
 
 app.get('/login',(req,res) => {
     res.render('login',{
-        //title: "Add New Activity"
     });
 });
 
@@ -152,7 +151,7 @@ app.post('/users', async(req,res) => {
         const newUserRegistration = new UserRegistration(req.body)
         await newUserRegistration.save();
         //res.send('user registered!!');
-        res.render('home')
+        res.render('login')
     }
     catch(err)
     {
@@ -161,12 +160,12 @@ app.post('/users', async(req,res) => {
     }    
 })
 
+//get specific user
 app.get('/api/users/:id', async(req,res) =>{
     const id = req.params.id;
     const users = await UserRegistration.findById(id);
     res.json(users);
 })
-
 
 //Login
 app.post('/login', async (req, res) => {
@@ -189,6 +188,17 @@ app.post('/login', async (req, res) => {
             error: 'Something went wrong' 
         });
     }
+});
+
+//Logout
+app.get('/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.redirect('/');
+        }
+        res.clearCookie('connect.sid');  // Optional: to clear the session cookie
+        res.redirect('/');  // Redirect to homepage after logout
+    });
 });
 
 
