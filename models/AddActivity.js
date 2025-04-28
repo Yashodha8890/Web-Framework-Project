@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+/* const mongoose = require('mongoose');
 
 const activityCatergorySchema = new mongoose.Schema({
-    activityCatergoryname  : {
+    activityName  : {
         type:String,
         required:true
     }, 
@@ -16,4 +16,4 @@ const activityCatergorySchema = new mongoose.Schema({
 // Prevent overwriting the model if it's already compiled
 const ActivityCategories = mongoose.models.ActivityCategories || mongoose.model('ActivityCategories', activityCategorySchema);
 
-module.exports = ActivityCategories;
+module.exports = ActivityCategories; */

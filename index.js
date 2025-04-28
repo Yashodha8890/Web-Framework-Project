@@ -4,6 +4,7 @@ const exphbs = require('express-handlebars');
 const ActivityCategories = require('./models/ActivityCategories');
 const UserRegistration = require('./models/UserRegistration');
 const AddActivity = require('./models/AddActivity');
+
 require('dotenv').config();
 
 const app = express();
@@ -60,7 +61,7 @@ app.get('/activityTracker',(req,res) => {
     });
 });
 
-app.post('/saveCatergory', async(req,res) => {
+/* app.post('/saveCatergory', async(req,res) => {
     console.log(req.body);
     try{
         const newAddActivity = new AddActivity(req.body);
@@ -74,7 +75,24 @@ app.post('/saveCatergory', async(req,res) => {
         res.status(500).send('Error saving User!!')
     }
     
-})
+});
+ */
+
+app.post('/saveCatergory', async(req,res) => {
+    console.log(req.body);
+    try{
+        const newActivityCategories = new ActivityCategories(req.body);
+        await newActivityCategories.save();
+        res.send('Added an Activity category');
+    }
+
+    catch(err)
+    {
+        console.log(err);
+        res.status(500).send('Error saving User!!')
+    }
+    
+});
 
 app.post('/users', async(req,res) => {
     try
