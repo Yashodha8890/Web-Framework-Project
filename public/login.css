@@ -1,6 +1,4 @@
-/*Unique styling for registration page only */
-
-.registration-page {
+.login-page {
     font-family: Arial, sans-serif;
     background-color: #bed6c9;
     background-size: cover;
@@ -14,7 +12,7 @@
    
 }
 
-.registration-container {
+.login-container {
     background-color: rgba(151, 212, 157, 0.9);
     width: 420px;
     padding: 30px 40px;
@@ -25,32 +23,29 @@
     
 }
 
-.registration-container img {
+.login-container img {
     width: 100px;
     height: 100px;
     object-fit: cover;
     margin-bottom: 15px;
 }
 
-.registration-container h2 {
+/* .registration-container h2 {
     margin-bottom: 20px;
     color: #088341;
     font-size: 24px;
-}
+} */
 
-.registration-container label {
+.login-container label {
     display: block;
     text-align: left;
     margin: 10px 0 5px;
     font-weight: bold;
 }
 
-.registration-container input[type="text"],
-.registration-container input[type="email"],
-.registration-container input[type="tel"],
-.registration-container input[type="date"],
-.registration-container input[type="password"],
-.registration-container select {
+.login-container input[type="text"],
+.login-container input[type="password"],
+.login-container select {
     width: 100%;
     padding: 8px;
     margin-bottom: 12px;
@@ -59,9 +54,9 @@
     box-sizing: border-box;
 }
 
-.registration-container input[type="submit"],
-.registration-container input[type="reset"],
-.registration-container .back-btn {
+.login-container input[type="submit"],
+.login-container input[type="reset"],
+.login-container .back-btn {
     padding: 10px 20px;
     border: none;
     border-radius: 6px;
@@ -70,17 +65,17 @@
     cursor: pointer;
 }
 
-.registration-container input[type="submit"] {
+.login-container input[type="submit"] {
     background-color: #088341;
     color: white;
 }
 
-.registration-container input[type="reset"] {
+.login-container input[type="reset"] {
     background-color: #a48c4b;
     color: white;
 }
 
-.registration-container .back-btn {
+.login-container .back-btn {
     background-color: #4d2f1c;
     color: white;
     text-decoration: none;

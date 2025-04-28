@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const exphbs = require('express-handlebars');
+const session = require('express-session');
 const ActivityCategories = require('./models/ActivityCategories');
 const UserRegistration = require('./models/UserRegistration');
 const Activity = require('./models/Activity');
@@ -25,6 +26,15 @@ app.set('view engine', 'handlebars');
 
 //This is the folder which contains files like css, imgs
 app.use(express.static('public'));
+
+//session
+app.use(session({
+    secret: 'your-secret-key',  // A secret key to sign the session ID cookie
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }  // Set to true if using HTTPS
+}));
+
 
 //Setting up the Database connection
 const dbUIRI = 'mongodb+srv://'+process.env.DBUSERNAME+':'+process.env.DBPASSWORD+'@'+process.env.CLUSTER+'.mongodb.net/'+process.env.DB+'?retryWrites=true&w=majority&appName=Cluster0';
@@ -64,8 +74,22 @@ app.get('/activityTracker',(req,res) => {
 });
 
 //Home.handlebars
-app.get('/home',(req,res) => {
+/* app.get('/home',(req,res) => {
     res.render('home',{
+        //title: "Add New Activity"
+    });
+}); */
+
+app.get('/home', (req, res) => {
+    if (req.session.user) {
+        res.render('home', { user: req.session.user });
+    } else {
+        res.redirect('/login');
+    }
+});
+
+app.get('/login',(req,res) => {
+    res.render('login',{
         //title: "Add New Activity"
     });
 });
@@ -136,6 +160,36 @@ app.post('/users', async(req,res) => {
         res.status(500).send('Error saving User!!')
     }    
 })
+
+app.get('/api/users/:id', async(req,res) =>{
+    const id = req.params.id;
+    const users = await UserRegistration.findById(id);
+    res.json(users);
+})
+
+
+//Login
+app.post('/login', async (req, res) => {
+    const { userName, password } = req.body;
+    
+    try {
+        const user = await UserRegistration.findOne({ userName });
+        
+        if (user && user.password === password) {
+            req.session.user = user;  // Save user data to session
+            res.redirect('/home');  // Redirect to homepage
+        } else {
+            res.render('login', { 
+                error: 'Invalid credentials' // Show an error message
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        res.render('login', { 
+            error: 'Something went wrong' 
+        });
+    }
+});
 
 
 // app.get('/activities', async (req,res) => {
