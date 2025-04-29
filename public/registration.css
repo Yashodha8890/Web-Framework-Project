@@ -1,0 +1,89 @@
+/*Unique styling for registration page only */
+
+.registration-page {
+    font-family: Arial, sans-serif;
+    background-color: #bed6c9;
+    background-size: cover;
+    background-position: 100%;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   
+}
+
+.registration-container {
+    background-color: rgba(151, 212, 157, 0.9);
+    width: 420px;
+    padding: 30px 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    position: center;
+    
+}
+
+.registration-container img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+
+.registration-container h2 {
+    margin-bottom: 20px;
+    color: #088341;
+    font-size: 24px;
+}
+
+.registration-container label {
+    display: block;
+    text-align: left;
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+
+.registration-container input[type="text"],
+.registration-container input[type="email"],
+.registration-container input[type="tel"],
+.registration-container input[type="date"],
+.registration-container input[type="password"],
+.registration-container select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.registration-container input[type="submit"],
+.registration-container input[type="reset"],
+.registration-container .back-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    margin: 10px 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.registration-container input[type="submit"] {
+    background-color: #088341;
+    color: white;
+}
+
+.registration-container input[type="reset"] {
+    background-color: #a48c4b;
+    color: white;
+}
+
+.registration-container .back-btn {
+    background-color: #4d2f1c;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 10px;
+}
