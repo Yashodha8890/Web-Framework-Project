@@ -2,7 +2,7 @@
 
 # Project Title : Daily Routine Tracker
 
-Daily Routine Tracker is a full-stack web application that helps users to organize and monitor their daily life through well structured tracking of activities, expenses, and health goals. This application will use below technologies:
+Daily Routine Tracker is a full-stack web application that helps users to organize and monitor their daily life through well structured tracking of activities and expenses goals. This application will use below technologies:
 
 **Frontend:** HTML, CSS, JavaScript, Some of the react(optional)  
 **Templating:** Handlebars.js for server-side rendering  
@@ -25,13 +25,7 @@ Other than above technologies, for the API testing purpose will use Postman. And
 - Track pending payments or upcoming bills  
 - View summaries of financial data in the Dashboard  
 - Dashboard displays weekly/monthly financial reports(Optional)  
-
-### Health Tracker
-- Set personal health-related goals (e.g., sleeping hrs, Water intake, weight, BP level, BS level etc..) - CRUD  
-- Record completed health activities and track progress  
-- Dashboard insights for weekly/monthly health performance  
-- Notifications for upcoming health tasks or skipped activities(Optional)  
-
+ 
 ### User Authentication & Roles
 - Secure login and registration system (using Passport.js or JWT)  
 - Maintain different user levels
