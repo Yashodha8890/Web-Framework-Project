@@ -1,0 +1,44 @@
+
+<body class="home-page">
+    <header class="home-header">
+        <div class="logo-section">
+            <img src="/images/Logo DRT.jpg" alt="Daily Routing Logo" class="logo-img">
+        </div>
+        <div class="logout-section">
+            <label>Hello!! {{user.userName}}</label>
+           <!-- <button class="logout-button">Logout</button>-->
+            <a href="/logout"><button class="logout-button">Logout</button></a>
+        </div>
+    </header>
+
+    <main class="home-main">
+        <h1>Welcome to Daily Routing Tracker</h1>
+        <p class="intro-text">
+            Daily Routine Tracker is a personal productivity web application designed to help you stay organized, manage your time, and keep track of your day-to-day life.
+With two core features — Activity Tracker and Expense Tracker — this app empowers you to build better habits, monitor your financials, and improve your daily routine.<br>
+
+✅ Activity Tracker: Plan and manage your daily or occasional tasks such as workouts, reading, or meetings. Update progress and stay on top of your goals with reminders and summary views.<br>
+
+💰 Expense Tracker: Record your income and expenses, track pending payments, and get insights into your financial habits.<br>
+
+All your progress is visualized in a clean and simple Dashboard, showing weekly and monthly summaries of your activities and expenses — helping you stay motivated and in control.<br><br>
+        </p>
+
+        <div class="card-container">
+            <div class="card">
+                <img src="/images/Activity.jpg" alt="Activities" class="card-img">
+                <!--<button class="card-button" href="http://localhost:3000/activityTracker">Track your activities</button>-->
+                <a class="card-button" href="http://localhost:3000/activityTracker">Track your activities</a>
+            </div>
+            <div class="card">
+                <img src="/images/finance.jpg" alt="Money" class="card-img">
+                <button class="card-button">Track your Money</button>
+            </div>
+            <div class="card">
+                <img src="/images/dashboard.jpg" alt="Dashboard" class="card-img">
+                <button class="card-button">Visit Dashboard</button>
+            </div>
+        </div>
+    </main>
+</body>
+
