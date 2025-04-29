@@ -9,20 +9,23 @@ const app = express();
 
 require('dotenv').config();
 
+//Setting up the Database connection
 const dbUIRI = 'mongodb+srv://'+process.env.DBUSERNAME+':'+process.env.DBPASSWORD+'@'+process.env.CLUSTER+'.mongodb.net/'+process.env.DB+'?retryWrites=true&w=majority&appName=Cluster0';
 
 console.log(dbUIRI);
 
 mongoose.connect(dbUIRI)
-.then((result) =>
-{
-    console.log('Connected to DB');
-})
+    .then((result) =>
+    {
+        console.log('Connected to DB');
+        const PORT = process.env.PORT || 3000;
+        app.listen(PORT, () => console.log(`App listening on port `+ PORT));
+    })
+    .catch((err)=>
+    {
+        console.log(err);
+    })
 
-.catch((err)=>
-{
-    console.log(err);
-})
 
 //this code says that defaults settings we are using the main.handlebars
 app.engine('handlebars', exphbs.engine({
