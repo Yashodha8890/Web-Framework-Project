@@ -1,11 +1,65 @@
 {{#each activities}}
-    {{this.activityName}}
-    {{this.activityDescription}}
-    {{this.ActivityPlannedDate}}
-    {{this.ActivityStartTime}}
+    {{this.activityName}}  
     {{this.ActivityEndTime}}
     {{this.activityStatus}}
     {{this.activityCatergory}}
     {{this.activityType}}
     {{this.activityPriority}}
 {{/each}}
+
+
+  <div class="flex min-h-screen">
+
+    <!-- Left Sidebar -->
+    <aside class="w-1/4 bg-green-600 text-white p-6">
+      <div class="mb-6">
+        <img src="images/Logo DRT.jpg" alt="Logo" class="w-full h-auto">
+      </div>
+
+      <nav class="flex flex-col space-y-4 text-center text-xl">
+        <a href="/" class="hover:bg-green-500 py-2 rounded">Home</a>
+        <a href="/activityTracker" class="hover:bg-green-500 py-2 rounded">Activity Tracker</a>
+        <a href="/addExpense" class="hover:bg-green-500 py-2 rounded">Money Tracker</a>
+        <a href="#" class="hover:bg-green-500 py-2 rounded">Dashboard</a>
+        <a href="#" class="hover:bg-green-500 py-2 rounded">Profile</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="w-3/4 p-8 overflow-x-auto">
+      <h1 class="text-3xl font-bold mb-6 text-gray-800">All Expenses</h1>
+
+      <table class="min-w-full bg-white border border-gray-300">
+        <thead>
+          <tr class="bg-gray-200">
+            <th class="border px-4 py-2">Amount</th>
+            <th class="border px-4 py-2">Category</th>
+            <th class="border px-4 py-2">Payment Method</th>
+            <th class="border px-4 py-2">Date</th>
+            <th class="border px-4 py-2">Notes</th>
+            <th class="border px-4 py-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each expenses}}
+            <tr class="hover:bg-gray-100">
+              <td class="border px-4 py-2">{{this.activityName}}</td>
+              <td class="border px-4 py-2">{{this.activityDescription}}</td>
+              <td class="border px-4 py-2">{{this.ActivityPlannedDate}}</td>
+              <td class="border px-4 py-2">{{this.ActivityStartTime}}</td>
+              
+              <td class="border px-4 py-2 space-x-2">
+                <a href="/updateExpense/{{this._id}}" class="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600">Update</a>
+                <form action="/deleteExpense/{{this._id}}" method="POST" style="display:inline;">
+                    <button type="submit" class="bg-red-500 text-white py-1 px-3 rounded">Delete</button>
+                </form>
+                {{/each}}
+              </td>
+            </tr>
+          
+        </tbody>
+      </table>
+    </main>
+
+  </div>
+

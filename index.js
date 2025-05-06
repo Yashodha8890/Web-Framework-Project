@@ -1,6 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const exphbs = require('express-handlebars');
+//Existed in the main branch
+const session = require('express-session');
+const ActivityCategories = require('./models/ActivityCategories');
+const UserRegistration = require('./models/UserRegistration');
+const Activity = require('./models/Activity');
+const ActivityTypes = require('./models/ActivityTypes');
 //added from Shammi's branch
 const viewExpense = require('./models/expenseView');
 const Expense = require('./models/expense');
@@ -26,17 +32,9 @@ mongoose.connect(dbUIRI)
     {
         console.log(err);
     })
-
-//Existed in the main branch
-const session = require('express-session');
-const ActivityCategories = require('./models/ActivityCategories');
-const UserRegistration = require('./models/UserRegistration');
-const Activity = require('./models/Activity');
-const ActivityTypes = require('./models/ActivityTypes');
-
 require('dotenv').config();
 
-const app = express();
+
 
 //Middlewares
 app.use(express.urlencoded({ extended: false }));
@@ -62,24 +60,6 @@ app.use(session({
     saveUninitialized: true,
     cookie: { secure: false }  // Set to true if using HTTPS
 }));
-
-
-//Setting up the Database connection
-const dbUIRI = 'mongodb+srv://'+process.env.DBUSERNAME+':'+process.env.DBPASSWORD+'@'+process.env.CLUSTER+'.mongodb.net/'+process.env.DB+'?retryWrites=true&w=majority&appName=Cluster0';
-
-console.log(dbUIRI);
-
-mongoose.connect(dbUIRI)
-    .then((result) =>
-    {
-        console.log('Connected to DB');
-        const PORT = process.env.PORT || 3000;
-        app.listen(PORT, () => console.log(`App listening on port `+ PORT));
-    })
-    .catch((err)=>
-    {
-        console.log(err);
-    })
 
 //Routes
 //index.handlebars
@@ -207,12 +187,19 @@ app.get('/login',(req,res) => {
     });
 });
 
-// app.get('/activityview',(req,res) => {
-//     res.render('activityview',{
-//         title: "Test"
+app.get('/activityview',(req,res) => {
+    res.render('activityview',{
+        title: "Test"
 
-//     });
-// });
+    });
+});
+
+/* app.get('/activity',(req,res) => {
+    res.render('activity',{
+        //title: "Test"
+
+    });
+}); */
 
 //Save activity Categories
 app.post('/saveCatergory', async(req,res) => {
@@ -356,27 +343,63 @@ app.get('/ActivityTracker', async (req, res) => {
     }
 });
 
-/* app.get('/activities', async (req, res) => {
+//get activity
+/* app.get('/activity', async (req, res) => {
+    const searchQuery = req.query.search;
+  
     try {
-        const activities = await Activity.find().lean(); // Fetch data as plain JS objects
-        console.log("Fetched Activities:", activities); // Check if activities are correctly fetched
-        res.render('activityTracker', { activities });
-    } catch (error) {
-        console.error('Error fetching activities:', error);
-        res.status(500).send('Server error');
+      let activityList;
+      if (searchQuery) {
+        activityList = await Activity.find({
+          $or: [
+            { activityName: { $regex: searchQuery, $options: 'i' } },
+            { activityDescription: { $regex: searchQuery, $options: 'i' } }
+          ]
+        });
+      } else {
+        activityList = await Activity.find().sort({ createdAt: -1 });
+      }
+  
+      res.render('activity', {
+        activityName: searchQuery ? `Search Results for "${searchQuery}"` : 'All Activities',
+        activities: activityList.map(a => a.toJSON()),
+        searchQuery: searchQuery || ''
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).render('error', { error: 'Error retrieving activities' });
     }
-}); */
+  }); */
 
-/* 
-//API get all activities
-app.get('/activities', async (req, res) => {
+  app.get('/activities', async (req, res) => {
     try {
-        const result = await Activity.find(); 
-       // res.json(result);
-       res.render('activityTracker', { activities });
-    } catch (error) {
-       //console.log(error);
-       console.error('Error fetching activities:', error);
-        res.status(500).send('Server error');
+        const allActivities = await Activity.find({});
+        res.render('ativity', { activities: allActivities });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Error retrieving activities.');
     }
-}); */
+});
+
+app.post('/deleteActivity/:id', async (req, res) => {
+    try {
+        await Activity.findByIdAndDelete(req.params.id);
+        res.redirect('/activities');
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Error deleting activity.');
+    }
+});
+
+app.get('/activity', async (req, res) => {
+    try {
+        const activities = await Activity.find().lean();
+        res.render('activity', {
+            title: 'Activity List',
+            activities: activities
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Failed to load activities.');
+    }
+});
