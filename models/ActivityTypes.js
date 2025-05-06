@@ -12,6 +12,10 @@ const activityTypeSchema = new mongoose.Schema({
     ActivityDuration : {
         type:String,
         required:true
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
     
 });

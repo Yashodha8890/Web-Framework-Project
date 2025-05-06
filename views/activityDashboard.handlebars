@@ -1,0 +1,149 @@
+<div class="d-flex">
+  <!-- Sidebar -->
+  <nav id="sidebar" class="bg-dark text-white min-vh-100">
+    <div class="sidebar-header p-3">
+      <img src="/images/Logo DRT.jpg" alt="Logo" class="logo-img mb-2" style="width: 100px;">
+      <h4>Daily Routing Tracker</h4>
+    </div>
+    <ul class="nav flex-column px-3">
+      <li class="nav-item">
+        <a class="nav-link text-white" href="/">Home</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link text-white" data-bs-toggle="collapse" href="#activityMenu" role="button">
+          Activity Tracker
+        </a>
+        <ul class="collapse list-unstyled ps-3" id="activityMenu">
+          <li><a class="nav-link" href="http://localhost:3000/activity">Activity Log</a></li>
+          <li><a class="nav-link" href="http://localhost:3000/updateActivity">Activity Update</a></li>
+        </ul>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link text-white" data-bs-toggle="collapse" href="#expenseMenu" role="button">
+          Expense Tracker
+        </a>
+        <ul class="collapse list-unstyled ps-3" id="expenseMenu">
+          <li><a class="nav-link text-white" href="/expense/sub1">Sub 1</a></li>
+          <li><a class="nav-link text-white" href="/expense/sub2">Sub 2</a></li>
+          <li><a class="nav-link text-white" href="/expense/sub3">Sub 3</a></li>
+        </ul>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link text-white" data-bs-toggle="collapse" href="#dashboardMenu" role="button">
+          Dashboard
+        </a>
+        <ul class="collapse list-unstyled ps-3" id="dashboardMenu">
+          <li><a class="nav-link text-white" href="/dashboard/activity">Activity Dashboard</a></li>
+          <li><a class="nav-link text-white" href="/dashboard/expense">Expense Dashboard</a></li>
+        </ul>
+      </li>
+
+      <li class="nav-item mt-3 px-2">
+        <span class="nav-link text-white">Hello!! {{user.userName}}</span>
+        <a href="/logout" class="btn btn-sm btn-outline-light mt-2">Logout</a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  .container
+  <main class="flex-grow-1 p-4">
+    <h2 class="mb-4">Activity Dashboard</h2>
+
+    <div class="mb-3">
+      <label for="activityType" class="form-label">Filter by Type:</label>
+      <select id="activityType" class="form-select" style="max-width: 300px;">
+        <option value="All">All</option>
+        <option value="Daily">Daily</option>
+        <option value="Weekly">Weekly</option>
+        <option value="Monthly">Monthly</option>
+      </select>
+    </div>
+
+    <div class="table-responsive mb-4">
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>Activity</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Change Status</th>
+          </tr>
+        </thead>
+        <tbody id="activityTable">
+          {{#each activities}}
+          <tr data-type="{{this.activityType}}">
+            <td>{{this.activityName}}</td>
+            <td>{{this.ActivityPlannedDateFormatted}}</td>
+            <td>{{this.activityType}}</td>
+            <td class="status">{{this.activityStatus}}</td>
+            <td>
+              <form action="/updateActivityStatus/{{this._id}}" method="POST">
+                <select name="status" class="form-select" onchange="this.form.submit()">
+                  <option disabled selected>Change</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Cancelled">Cancelled</option>
+                  <option value="Postphones">Postphoned</option>
+                  <option value="Abandoned">Abandoned</option>
+                </select>
+              </form>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <canvas id="statusChart"></canvas>
+      </div>
+      <div class="col-md-6">
+        <canvas id="completionChart"></canvas>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const typeFilter = document.getElementById('activityType');
+  const rows = document.querySelectorAll('#activityTable tr');
+  typeFilter.addEventListener('change', () => {
+    const selected = typeFilter.value;
+    rows.forEach(row => {
+      row.style.display = (selected === 'All' || row.dataset.type === selected) ? '' : 'none';
+    });
+  });
+
+  const ctx1 = document.getElementById('statusChart').getContext('2d');
+  const statusChart = new Chart(ctx1, {
+    type: 'pie',
+    data: {
+      labels: ['Pending', 'In Progress', 'Completed', 'Cancelled'],
+      datasets: [{
+        label: 'Status Distribution',
+        data: [5, 3, 12, 2], // Replace with dynamic values from backend
+        backgroundColor: ['gray', 'orange', 'green', 'red']
+      }]
+    }
+  });
+
+  const ctx2 = document.getElementById('completionChart').getContext('2d');
+  const completionChart = new Chart(ctx2, {
+    type: 'bar',
+    data: {
+      labels: ['This Week', 'This Month'],
+      datasets: [{
+        label: '% Completed',
+        data: [70, 85], // Replace with dynamic values from backend
+        backgroundColor: ['blue', 'purple']
+      }]
+    }
+  });
+</script>
