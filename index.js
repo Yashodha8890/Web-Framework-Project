@@ -96,6 +96,12 @@ app.get('/login',(req,res) => {
     });
 });
 
+//UpdateActivity.handlebars
+app.get('/updateActivity',(req,res) => {
+    res.render('updateActivity',{
+    });
+});
+
 //Merged from Shammi's branch
 //expense.handlebars
 app.get('/addExpense',(req,res) => {

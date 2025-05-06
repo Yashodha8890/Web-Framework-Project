@@ -46,6 +46,7 @@
     max-width: auto;
     margin: 40px auto; /* Horizontally centers the container */
     padding: 20px;
+    padding-left: 250px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #fdfdfd;
     border-radius: 12px;

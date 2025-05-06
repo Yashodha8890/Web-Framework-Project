@@ -15,9 +15,8 @@
           Activity Tracker
         </a>
         <ul class="collapse list-unstyled ps-3" id="activityMenu">
-          <li><a class="nav-link text-white" href="/activity/save">Activity Log</a></li>
-          <li><a class="nav-link text-white" href="/activity/category">Activity Update</a></li>
-          <li><a class="nav-link text-white" href="/activity/type">Activity Type Saving</a></li>
+          <li><a class="nav-link" href="http://localhost:3000/activity">Activity Log</a></li>
+          <li><a class="nav-link" href="http://localhost:3000/updateActivity">Activity Update</a></li>
         </ul>
       </li>
 
@@ -50,6 +49,7 @@
   </nav>
 
   <!-- Main Content -->
+  .container
   <main class="flex-grow-1 p-4">
     <h2 class="mb-4">Activity Dashboard</h2>
 
@@ -88,6 +88,8 @@
                   <option value="In Progress">In Progress</option>
                   <option value="Completed">Completed</option>
                   <option value="Cancelled">Cancelled</option>
+                  <option value="Postphones">Postphoned</option>
+                  <option value="Abandoned">Abandoned</option>
                 </select>
               </form>
             </td>

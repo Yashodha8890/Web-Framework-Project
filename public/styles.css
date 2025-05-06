@@ -45,11 +45,15 @@ body {
   {
     background-color: rgb(115, 135, 135);
     height: auto;
+    padding-left: 40px;
+    margin-left: 40px;
+    margin-top: 20px;
   }
 
   .containerSaveActivityCategory
   {
     background-color: rgb(207, 202, 172);
+    margin-top: 5px;
   }
 
   /* expense tracker css */

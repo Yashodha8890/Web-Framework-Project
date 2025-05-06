@@ -17,7 +17,7 @@
         </a>
         <ul class="collapse list-unstyled ps-3" id="activityMenu">
           <li><a class="nav-link" href="http://localhost:3000/activity">Activity Log</a></li>
-          <li><a class="nav-link" href="/activity/category">Activity Update</a></li>
+          <li><a class="nav-link" href="http://localhost:3000/updateActivity">Activity Update</a></li>
         </ul>
       </li>
 
@@ -90,14 +90,11 @@
                                 <br>
                             <select id="ActivityType" name="activityType" required>
                                 <option value="select">Select</option>
-                                <option value="meditation">Meditation</option>
-                                <option value="journaling">Journaling</option>
-                                <option value="gym Workout">Gym Workout</option>
-                                <option value="running">Running</option>
-                                <option value="stretching">Stretching</option>
-                                <option value="sports">Sports</option>
-                                <option value="mealTracking">Meal Tracking</option>
-                                <option value="waterIntake">Water Intake</option>
+                                <option value="hourly">Hourly</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
                             </select>
                             <br>
                             <select id="ActivityPriority" name="activityPriority" required>
@@ -171,13 +168,11 @@
                         </div>
                     </form>
         </div>        
-</div>
-        <br>       
+</div>    
 </div>   
     
 <div class="container-viewActivity">
   <h1 style="text-align: center;">{{title}}</h1>
-  <h2>All Activities</h2>
   <div class="table-container">
   <table class="activity-table" border="1" cellpadding="10">
             <thead>
