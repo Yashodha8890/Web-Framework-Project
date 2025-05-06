@@ -179,22 +179,14 @@ app.post('/deleteExpense/:id', async (req, res) => {
 //Shammi's branch changes are finished here
 
 
-
-
-/* app.get('/activity',(req,res) => {
-    res.render('activity',{
-        //title: "Test"
-
-    });
-}); */
-
+//Activty Tracker codes
 //Save activity Categories
 app.post('/saveCatergory', async(req,res) => {
-    //console.log(req.body);
     try{
         const newActivityCategories = new ActivityCategories(req.body);
         await newActivityCategories.save();
-        res.send('Added an Activity category');
+        //res.send('Added an Activity category');
+        res.redirect('activity');
     }
     catch(err)
     {
@@ -208,7 +200,8 @@ app.post('/saveActivityType', async(req,res) => {
     try{
         const newActivityTypes = new ActivityTypes(req.body);
         await newActivityTypes.save();
-        res.send('Added an Activity types');
+       // res.send('Added an Activity types');
+        res.redirect('activity');
     }
     catch(err)
     {
@@ -223,7 +216,8 @@ app.post('/saveActivityType', async(req,res) => {
     try{
         const newActivity = new Activity(req.body);
         await newActivity.save();
-        res.send('Added a new Activity!!');
+        //res.send('Added a new Activity!!');
+        res.redirect('activity');
     }
     catch(err)
     {
@@ -232,6 +226,40 @@ app.post('/saveActivityType', async(req,res) => {
     }   
 });
 
+//Retriew all activities
+app.get('/activity', async (req, res) => {
+    try {
+        const activities = await Activity.find().lean();
+        // Format each planned date to "Tue Oct 10 2000"
+        const formattedActivities = activities.map(activity => {
+            const date = new Date(activity.ActivityPlannedDate);
+            return {
+                ...activity,
+                ActivityPlannedDateFormatted: date.toDateString() // returns "Tue Oct 10 2000"
+            };
+        });
+        res.render('activity', {
+            title: 'Activity List',
+            activities: formattedActivities
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Failed to load activities.');
+    }
+});
+
+//Delete an activity
+app.post('/deleteActivity/:id', async (req, res) => {
+    try {
+        await Activity.findByIdAndDelete(req.params.id);
+        res.redirect('activity');
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Error deleting activity.');
+    }
+});
+
+//Registration/Login/Logout Related codes
 //Save users
 app.post('/users', async(req,res) => {
     try
@@ -290,103 +318,42 @@ app.get('/logout', (req, res) => {
 });
 
 
-// app.get('/activities', async (req,res) => {
-//     //console.log("Fetched Activities:", activities);
-//     try{
-//         const activities = await Activity.find(); 
-//         res.render('activityview', 
-//             { 
-//                 activities: activities.map(activity => activity.toJSON())
-//             });
-           
-//         }      
-//      catch (err) {
-//                 console.error(err);
-//                 res.status(500).send('Server Error'); // So browser gets some error message instead of hanging
-//             }
-// //     // } 
-// //     // catch (error) {
-// //     //     //console.error('Error fetching activities:', error);
-// //     //     res.status(500).send('Server error');
-// //     // }
-// })
-
-
-//Get All Activities
-// GET all activities
-app.get('/ActivityTracker', async (req, res) => {
-    //console.log("Fetched Activities:", activities);
-    try 
-    {
-        const activities = await Activity.find(); 
-        res.render('ActivityTracker', 
-            { 
-                activities : activities.map(activities => activities.toJSON())
-            });
-
-    } catch (error) {
-        console.error('Error fetching activities:', error);
-        res.status(500).send('Server error');
-    }
-});
-
-//get activity
-/* app.get('/activity', async (req, res) => {
-    const searchQuery = req.query.search;
-  
-    try {
-      let activityList;
-      if (searchQuery) {
-        activityList = await Activity.find({
-          $or: [
-            { activityName: { $regex: searchQuery, $options: 'i' } },
-            { activityDescription: { $regex: searchQuery, $options: 'i' } }
-          ]
-        });
-      } else {
-        activityList = await Activity.find().sort({ createdAt: -1 });
-      }
-  
-      res.render('activity', {
-        activityName: searchQuery ? `Search Results for "${searchQuery}"` : 'All Activities',
-        activities: activityList.map(a => a.toJSON()),
-        searchQuery: searchQuery || ''
-      });
-    } catch (err) {
-      console.error(err);
-      res.status(500).render('error', { error: 'Error retrieving activities' });
-    }
-  }); */
-
-  app.get('/activities', async (req, res) => {
-    try {
-        const allActivities = await Activity.find({});
-        res.render('ativity', { activities: allActivities });
-    } catch (err) {
-        console.log(err);
-        res.status(500).send('Error retrieving activities.');
-    }
-});
-
-app.post('/deleteActivity/:id', async (req, res) => {
-    try {
-        await Activity.findByIdAndDelete(req.params.id);
-        res.redirect('/activities');
-    } catch (err) {
-        console.log(err);
-        res.status(500).send('Error deleting activity.');
-    }
-});
-
-app.get('/activity', async (req, res) => {
+//Render activity Dashboard
+app.get('/activityDashboard', async (req, res) => {
     try {
         const activities = await Activity.find().lean();
-        res.render('activity', {
-            title: 'Activity List',
-            activities: activities
+        const formattedActivities = activities.map(activity => {
+            const date = new Date(activity.ActivityPlannedDate);
+            return {
+                ...activity,
+                ActivityPlannedDateFormatted: date.toDateString()
+            };
+        });
+
+        res.render('activityDashboard', {
+            title: 'Activity Dashboard',
+            activities: formattedActivities
         });
     } catch (err) {
         console.error(err);
-        res.status(500).send('Failed to load activities.');
+        res.status(500).send('Failed to load dashboard.');
     }
 });
+
+//Update activity status
+app.post('/updateActivityStatus/:id', async (req, res) => {
+    try {
+        await Activity.findByIdAndUpdate(req.params.id, {
+            activityStatus: req.body.status
+        });
+        res.redirect('/activityDashboard');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Failed to update activity status.');
+    }
+});
+
+
+
+
+
