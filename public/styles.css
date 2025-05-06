@@ -30,6 +30,7 @@ body {
     margin-top: 10px;
     margin-left: 10px;
   }
+  
   .activityHeader
   {
     background-color: #088341;
@@ -39,10 +40,11 @@ body {
   {
     background-color: #9ec1bc;
   }
+
   .containerSaveActivity
   {
     background-color: rgb(115, 135, 135);
-    border-radius: 40px ;
+    height: auto;
   }
 
   .containerSaveActivityCategory

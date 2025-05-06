@@ -81,6 +81,21 @@ app.get('/activityTracker',(req,res) => {
     });
 });
 
+//Home.handlebars
+app.get('/home', (req, res) => {
+    if (req.session.user) {
+        res.render('home', { user: req.session.user });
+    } else {
+        res.redirect('/login');
+    }
+});
+
+//Login.handlebars
+app.get('/login',(req,res) => {
+    res.render('login',{
+    });
+});
+
 //Merged from Shammi's branch
 //expense.handlebars
 app.get('/addExpense',(req,res) => {
@@ -163,36 +178,8 @@ app.post('/deleteExpense/:id', async (req, res) => {
   });
 //Shammi's branch changes are finished here
 
-//This is the folder which contains files like css, imgs
-app.use(express.static('public'));
 
-//Existed in the main branch
-//Home.handlebars
-/* app.get('/home',(req,res) => {
-    res.render('home',{
-        //title: "Add New Activity"
-    });
-}); */
 
-app.get('/home', (req, res) => {
-    if (req.session.user) {
-        res.render('home', { user: req.session.user });
-    } else {
-        res.redirect('/login');
-    }
-});
-
-app.get('/login',(req,res) => {
-    res.render('login',{
-    });
-});
-
-app.get('/activityview',(req,res) => {
-    res.render('activityview',{
-        title: "Test"
-
-    });
-});
 
 /* app.get('/activity',(req,res) => {
     res.render('activity',{
