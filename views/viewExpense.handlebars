@@ -28,7 +28,9 @@
             <th class="border px-4 py-2">Amount</th>
             <th class="border px-4 py-2">Category</th>
             <th class="border px-4 py-2">Payment Method</th>
-            <th class="border px-4 py-2">Date</th>
+            <th class="border px-4 py-2">Due Date</th>
+            <th class="border px-4 py-2">Paid Date</th>
+            <th class="border px-4 py-2">Status</th>
             <th class="border px-4 py-2">Notes</th>
             <th class="border px-4 py-2">Actions</th>
           </tr>
@@ -39,12 +41,14 @@
               <td class="border px-4 py-2">${{this.amount}}</td>
               <td class="border px-4 py-2">{{this.category}}</td>
               <td class="border px-4 py-2">{{this.paymentMethod}}</td>
-              <td class="border px-4 py-2">{{this.date}}</td>
+              <td class="border px-4 py-2">{{this.dueDate}}</td>
+              <td class="border px-4 py-2">{{this.paidDate}}</td>
+              <td class="border px-4 py-2">{{this.status}}</td>
               <td class="border px-4 py-2">{{this.notes}}</td>
               <td class="border px-4 py-2 space-x-2">
-                <a href="/updateExpense/{{this._id}}" class="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600">Update</a>
+                <a href="/updateExpense/{{this._id}}" class="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600">Edit</a>
                 <form action="/deleteExpense/{{this._id}}" method="POST" style="display:inline;">
-                    <button type="submit" class="bg-red-500 text-white py-1 px-3 rounded">Delete</button>
+                    <button type="submit" class="bg-red-500 text-white py-1 px-3 rounded">x</button>
                 </form>
                 {{/each}}
               </td>
