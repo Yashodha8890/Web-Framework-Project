@@ -85,11 +85,10 @@
               <form action="/updateActivityStatus/{{this._id}}" method="POST">
                 <select name="status" class="form-select" onchange="this.form.submit()">
                   <option disabled selected>Change</option>
-                  <option value="Pending">Pending</option>
-                  <option value="InProgress">InProgress</option>
+                  <option value="In Progress">In Progress</option>
                   <option value="Completed">Completed</option>
                   <option value="Cancelled">Cancelled</option>
-                  <option value="Postponed">Postponed</option>
+                  <option value="Postphones">Postphoned</option>
                   <option value="Abandoned">Abandoned</option>
                 </select>
               </form>
@@ -115,33 +114,22 @@
 <script>
   const typeFilter = document.getElementById('activityType');
   const rows = document.querySelectorAll('#activityTable tr');
-  typeFilter?.addEventListener('change', () => {
+  typeFilter.addEventListener('change', () => {
     const selected = typeFilter.value;
     rows.forEach(row => {
       row.style.display = (selected === 'All' || row.dataset.type === selected) ? '' : 'none';
     });
   });
 
-  // Injected JSON objects
-  const statusCounts = {{{statusCountsJSON}}};
-  const statusPercentages = {{{statusPercentagesJSON}}};
-
   const ctx1 = document.getElementById('statusChart').getContext('2d');
   const statusChart = new Chart(ctx1, {
     type: 'pie',
     data: {
-      labels: ['Pending', 'InProgress', 'Completed', 'Cancelled', 'Postponed', 'Abandoned'],
+      labels: ['Pending', 'In Progress', 'Completed', 'Cancelled'],
       datasets: [{
         label: 'Status Distribution',
-        data: [
-          statusCounts["Pending"],
-          statusCounts["InProgress"],
-          statusCounts["Completed"],
-          statusCounts["Cancelled"],
-          statusCounts["Postponed"],
-          statusCounts["Abandoned"]
-        ],
-        backgroundColor: ['gray', 'orange', 'green', 'red', 'blue', 'brown']
+        data: [5, 3, 12, 2], // Replace with dynamic values from backend
+        backgroundColor: ['gray', 'orange', 'green', 'red']
       }]
     }
   });
@@ -150,18 +138,11 @@
   const completionChart = new Chart(ctx2, {
     type: 'bar',
     data: {
-      labels: ['Pending', 'InProgress', 'Completed', 'Cancelled', 'Postponed', 'Abandoned'],
+      labels: ['This Week', 'This Month'],
       datasets: [{
-        label: '% of Total Activities',
-        data: [
-          statusPercentages["Pending"],
-          statusPercentages["InProgress"],
-          statusPercentages["Completed"],
-          statusPercentages["Cancelled"],
-          statusPercentages["Postponed"],
-          statusPercentages["Abandoned"]
-        ],
-        backgroundColor: ['gray', 'orange', 'green', 'red', 'blue', 'brown']
+        label: '% Completed',
+        data: [70, 85], // Replace with dynamic values from backend
+        backgroundColor: ['blue', 'purple']
       }]
     }
   });
