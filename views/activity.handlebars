@@ -8,7 +8,7 @@
     <ul class="nav flex-column">
 
       <li class="nav-item">
-        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="http://localhost:3000/home">Home</a>
       </li>
 
       <li class="nav-item">
@@ -71,7 +71,7 @@
                         </div>
                         <div class="col-sm-3">
                             <input type="text" class="form-control" id="activityName" name="activityName" required>                            
-                            <input type="text" class="form-control" id="activityDescription" name="activityDescription" required>
+                            <input type="text" class="form-control" id="activityDescription" name="activityDescription" required><br>
                             <input type="date" id="activityPlannedDate" name="ActivityPlannedDate" required><br>
                             <input type="time" id="activityStartTime" name="ActivityStartTime" required><br>
                             <input type="time" id="activityEndTime" name="ActivityEndTime" required><br>
@@ -87,7 +87,7 @@
                                 <option value="household">Houlshold</option>
                                 <option value="Leisure">Leisure</option>
                             </select>
-                                <br>
+                                <br><br>
                             <select id="ActivityType" name="activityType" required>
                                 <option value="select">Select</option>
                                 <option value="hourly">Hourly</option>
@@ -206,6 +206,7 @@
                     <form action="/deleteActivity/{{this._id}}" method="post">
                         <button type="submit" class="delete" onclick="return confirm('Are you sure?')">Delete</button>
                     </form>
+                    
                     <form action="/updateActivity/{{this._id}}" method="get">
                         <button type="submit" class="update">Update</button>
                     </form>
