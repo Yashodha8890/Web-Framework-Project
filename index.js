@@ -119,7 +119,46 @@ app.get('/addExpense',(req,res) => {
     });
 });
 
+
 //add expense date to database
+
+//////////////////////////////////////////////////////////////////////
+//expenseDashboart.handlebars
+app.get('/expenseDashboard', async (req, res) => {
+    try {
+      const allExpenses = await Expense.find();
+  
+      // Step 1: Count statuses
+      const statusCounts = allExpenses.reduce((acc, expense) => {
+        acc[expense.status] = (acc[expense.status] || 0) + 1;
+        return acc;
+      }, {});
+  
+      // Step 2: Calculate percentages
+      const total = allExpenses.length;
+      const statusPercentages = {};
+      for (const status in statusCounts) {
+        statusPercentages[status] = ((statusCounts[status] / total) * 100).toFixed(2);
+      }
+  
+      res.render('expenseDashboard', {
+        user: req.user, // if using authentication
+        expenses: allExpenses.map(exp => ({
+          ...exp.toObject(),
+          dueDateFormatted: exp.dueDate?.toLocaleDateString(),
+          paidDateFormatted: exp.paidDate ? exp.paidDate.toLocaleDateString() : '—'
+        })),
+        expenseStatusCountsJSON: JSON.stringify(statusCounts),
+        expenseStatusPercentagesJSON: JSON.stringify(statusPercentages)
+      });
+  
+    } catch (err) {
+      console.error('Error fetching expenses:', err);
+      res.status(500).send("Server Error");
+    }
+  });
+////////////////////////////////////////////////////////////////
+//add expense data to database
 app.post('/addExpense', async(req,res) => {
     try
     {
@@ -170,8 +209,10 @@ app.post('/updateExpense/:id', async (req, res) => {
       await Expense.findByIdAndUpdate(req.params.id, {
         amount: req.body.amount,
         category: req.body.category,
+        dueDate: req.body.dueDate,
+        paidDate: req.body.paidDate,
+        status:req.body.status,
         paymentMethod: req.body.paymentMethod,
-        date: req.body.date,
         notes: req.body.notes
       });
       res.redirect('/viewExpense');
