@@ -46,56 +46,70 @@
         <span class="nav-link">Hello!! {{user.userName}}</span>
         <a href="/logout" class="btn btn-sm btn-outline-light mt-2">Logout</a>
       </li>
-
     </ul>
   </nav>
 
-<div class="container-viewActivity">
-  <h1 style="text-align: center;">{{title}}</h1>
-  <h2>All Activities</h2>
-  <div class="table-container">
-  <table class="activity-table" border="1" cellpadding="10">
-            <thead>
-            <tr>
-                <th style="width: 17%;">Activity Name</th>
-                <th style="width: 17%;">Description</th>
-                <th style="width: 12%;">Planned Date</th>
-                <th style="width: 8%;">Start Time</th>
-                <th style="width: 8%;">End Time</th>
-                <th style="width: 10%;">Status</th>
-                <th style="width: 10%;">Category</th>
-                <th style="width: 10%;">Type</th>
-                <th style="width: 8%;">Priority</th>
-                <th style="width: 15%;">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {{#each activities}}
-            <tr>
-                <td style="width: 17%;">{{this.activityName}}</td>
-                <td style="width: 14%;">{{this.activityDescription}}</td>
-                <td style="width: 10%;">{{this.ActivityPlannedDateFormatted}}</td>
-                <td style="width: 8%;">{{this.ActivityStartTime}}</td>
-                <td style="width: 8%;">{{this.ActivityEndTime}}</td>
-                <td style="width: 10%;">{{this.activityStatus}}</td>
-                <td style="width: 10%;">{{this.activityCatergory}}</td>
-                <td style="width: 8%;">{{this.activityType}}</td>
-                <td style="width: 15%;">{{this.activityPriority}}</td>
-                <td>
-                <div class="action-buttons">
-                    <form action="/deleteActivity/{{this._id}}" method="post">
-                        <button type="submit" class="delete" onclick="return confirm('Are you sure?')">Delete</button>
-                    </form>
-                    <form action="/updateActivity/{{this._id}}" method="get">
-                        <button type="submit" class="update">Update</button>
-                    </form>
-                </div>
-                </td>
-            </tr>
-            {{/each}}
-        </tbody>
-    </table>  
-    </div>
-    </div>
-</div>
+
+<div class="update-activity-container">
+    <h2>Update Activity</h2>
+    <form action="/updateActivity/{{activity._id}}" method="POST" class="update-form">
+        <div class="form-group">
+            <label>Activity Name:
+                <input type="text" name="activityName" value="{{activity.activityName}}" required>
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label>Description:
+                <textarea name="activityDescription" required>{{activity.activityDescription}}</textarea>
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label>Planned Date:
+                <input type="date" name="ActivityPlannedDate" value="{{activity.ActivityPlannedDateFormatted}}" required>
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label>Start Time:
+                <input type="time" name="ActivityStartTime" value="{{activity.ActivityStartTime}}" required>
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label>End Time:
+                <input type="time" name="ActivityEndTime" value="{{activity.ActivityEndTime}}" required>
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label>Status:
+                <input type="text" class="readonly-field" name="activityStatus" value="{{activity.activityStatus}}" readonly>
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label>Category:
+                <input type="text" class="readonly-field" name="activityCatergory" value="{{activity.activityCatergory}}" readonly>
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label>Type:
+                <input type="text" class="readonly-field" name="activityType" value="{{activity.activityType}}" readonly>
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label>Priority:
+                <input type="text" class="readonly-field" name="activityPriority" value="{{activity.activityPriority}}" readonly>
+            </label>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-update">Update Activity</button>
+            <a href="/activity" class="btn-cancel">Cancel</a>
+        </div>
+    </form>
 </div>
