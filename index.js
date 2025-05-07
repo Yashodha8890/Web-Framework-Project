@@ -61,6 +61,15 @@ app.use(session({
     cookie: { secure: false }  // Set to true if using HTTPS
 }));
 
+// Define the custom helper to convert objects to JSON
+const handlebars = exphbs.create({
+    helpers: {
+      json: function(context) {
+        return JSON.stringify(context);
+      }
+    }
+  });
+
 //Routes
 //index.handlebars
 app.get('/',(req,res) => {
@@ -333,26 +342,108 @@ app.get('/logout', (req, res) => {
 
 
 //Render activity Dashboard
-app.get('/activityDashboard', async (req, res) => {
+/* app.get('/activityDashboard', async (req, res) => {
     try {
-        const activities = await Activity.find().lean();
-        const formattedActivities = activities.map(activity => {
-            const date = new Date(activity.ActivityPlannedDate);
-            return {
-                ...activity,
-                ActivityPlannedDateFormatted: date.toDateString()
-            };
-        });
-
-        res.render('activityDashboard', {
-            title: 'Activity Dashboard',
-            activities: formattedActivities
-        });
+      const activities = await Activity.find().lean();
+  
+      const formattedActivities = activities.map(activity => {
+        const date = new Date(activity.ActivityPlannedDate);
+        return {
+          ...activity,
+          ActivityPlannedDateFormatted: date.toDateString()
+        };
+      });
+  
+      // Count activity statuses
+      const statusCounts = {
+        pending: 0,
+        inProgress: 0,
+        completed: 0,
+        abandoned: 0,
+        postponed: 0
+      };
+  
+      activities.forEach(activity => {
+        const status = activity.activityStatus?.toLowerCase().replace(/\s/g, '');
+        if (statusCounts.hasOwnProperty(status)) {
+          statusCounts[status]++;
+        }
+      });
+  
+      const totalActivities = activities.length;
+      const statusPercentages = {};
+      for (const key in statusCounts) {
+        statusPercentages[key] = totalActivities > 0
+          ? Math.round((statusCounts[key] / totalActivities) * 100)
+          : 0;
+      }
+  
+      res.render('activityDashboard', {
+        title: 'Activity Dashboard',
+        activities: formattedActivities,
+        statusCounts,
+        statusPercentages
+      });
     } catch (err) {
-        console.error(err);
-        res.status(500).send('Failed to load dashboard.');
+      console.error(err);
+      res.status(500).send('Failed to load dashboard.');
     }
-});
+  }); */
+
+  app.get('/activityDashboard', async (req, res) => {
+    try {
+      const activities = await Activity.find().lean();
+  
+      const formattedActivities = activities.map(activity => {
+        const date = new Date(activity.ActivityPlannedDate);
+        return {
+          ...activity,
+          ActivityPlannedDateFormatted: date.toDateString()
+        };
+      });
+  
+      // Updated possibleStatuses to match DB format (no spaces)
+      const possibleStatuses = ['Pending', 'InProgress', 'Completed', 'Cancelled', 'Postponed', 'Abandoned'];
+  
+      const statusCounts = {};
+      possibleStatuses.forEach(status => {
+        statusCounts[status] = 0;
+      });
+  
+      activities.forEach(activity => {
+        const status = activity.activityStatus?.trim();
+        if (status && statusCounts.hasOwnProperty(status)) {
+          statusCounts[status]++;
+        }
+      });
+  
+      const totalActivities = activities.length;
+      const statusPercentages = {};
+      for (const status in statusCounts) {
+        statusPercentages[status] = totalActivities > 0
+          ? Math.round((statusCounts[status] / totalActivities) * 100)
+          : 0;
+      }
+  
+      res.render('activityDashboard', {
+        title: 'Activity Dashboard',
+        activities: formattedActivities,
+        statusCounts,
+        statusPercentages,
+        possibleStatuses,
+        statusCountsJSON: JSON.stringify(statusCounts),
+        statusPercentagesJSON: JSON.stringify(statusPercentages)
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Failed to load dashboard.');
+    }
+  });
+  
+  
+  
+  
+  
 
 //Update activity status
 app.post('/updateActivityStatus/:id', async (req, res) => {
