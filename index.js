@@ -1,6 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const exphbs = require('express-handlebars');
+//Existed in the main branch
+const session = require('express-session');
+const ActivityCategories = require('./models/ActivityCategories');
+const UserRegistration = require('./models/UserRegistration');
+const Activity = require('./models/Activity');
+const ActivityTypes = require('./models/ActivityTypes');
 //added from Shammi's branch
 const viewExpense = require('./models/expenseView');
 const Expense = require('./models/expense');
@@ -26,17 +32,9 @@ mongoose.connect(dbUIRI)
     {
         console.log(err);
     })
-
-//Existed in the main branch
-const session = require('express-session');
-const ActivityCategories = require('./models/ActivityCategories');
-const UserRegistration = require('./models/UserRegistration');
-const Activity = require('./models/Activity');
-const ActivityTypes = require('./models/ActivityTypes');
-
 require('dotenv').config();
 
-const app = express();
+
 
 //Middlewares
 app.use(express.urlencoded({ extended: false }));
@@ -63,24 +61,6 @@ app.use(session({
     cookie: { secure: false }  // Set to true if using HTTPS
 }));
 
-
-//Setting up the Database connection
-const dbUIRI = 'mongodb+srv://'+process.env.DBUSERNAME+':'+process.env.DBPASSWORD+'@'+process.env.CLUSTER+'.mongodb.net/'+process.env.DB+'?retryWrites=true&w=majority&appName=Cluster0';
-
-console.log(dbUIRI);
-
-mongoose.connect(dbUIRI)
-    .then((result) =>
-    {
-        console.log('Connected to DB');
-        const PORT = process.env.PORT || 3000;
-        app.listen(PORT, () => console.log(`App listening on port `+ PORT));
-    })
-    .catch((err)=>
-    {
-        console.log(err);
-    })
-
 //Routes
 //index.handlebars
 app.get('/',(req,res) => {
@@ -98,6 +78,27 @@ app.get('/userRegistration',(req,res) => {
 app.get('/activityTracker',(req,res) => {
     res.render('activityTracker',{
         title: "Add New Activity"
+    });
+});
+
+//Home.handlebars
+app.get('/home', (req, res) => {
+    if (req.session.user) {
+        res.render('home', { user: req.session.user });
+    } else {
+        res.redirect('/login');
+    }
+});
+
+//Login.handlebars
+app.get('/login',(req,res) => {
+    res.render('login',{
+    });
+});
+
+//UpdateActivity.handlebars
+app.get('/updateActivity',(req,res) => {
+    res.render('updateActivity',{
     });
 });
 
@@ -183,44 +184,15 @@ app.post('/deleteExpense/:id', async (req, res) => {
   });
 //Shammi's branch changes are finished here
 
-//This is the folder which contains files like css, imgs
-app.use(express.static('public'));
 
-//Existed in the main branch
-//Home.handlebars
-/* app.get('/home',(req,res) => {
-    res.render('home',{
-        //title: "Add New Activity"
-    });
-}); */
-
-app.get('/home', (req, res) => {
-    if (req.session.user) {
-        res.render('home', { user: req.session.user });
-    } else {
-        res.redirect('/login');
-    }
-});
-
-app.get('/login',(req,res) => {
-    res.render('login',{
-    });
-});
-
-// app.get('/activityview',(req,res) => {
-//     res.render('activityview',{
-//         title: "Test"
-
-//     });
-// });
-
+//Activty Tracker codes
 //Save activity Categories
 app.post('/saveCatergory', async(req,res) => {
-    //console.log(req.body);
     try{
         const newActivityCategories = new ActivityCategories(req.body);
         await newActivityCategories.save();
-        res.send('Added an Activity category');
+        //res.send('Added an Activity category');
+        res.redirect('activity');
     }
     catch(err)
     {
@@ -234,7 +206,8 @@ app.post('/saveActivityType', async(req,res) => {
     try{
         const newActivityTypes = new ActivityTypes(req.body);
         await newActivityTypes.save();
-        res.send('Added an Activity types');
+       // res.send('Added an Activity types');
+        res.redirect('activity');
     }
     catch(err)
     {
@@ -249,7 +222,8 @@ app.post('/saveActivityType', async(req,res) => {
     try{
         const newActivity = new Activity(req.body);
         await newActivity.save();
-        res.send('Added a new Activity!!');
+        //res.send('Added a new Activity!!');
+        res.redirect('activity');
     }
     catch(err)
     {
@@ -258,6 +232,40 @@ app.post('/saveActivityType', async(req,res) => {
     }   
 });
 
+//Retriew all activities
+app.get('/activity', async (req, res) => {
+    try {
+        const activities = await Activity.find().lean();
+        // Format each planned date to "Tue Oct 10 2000"
+        const formattedActivities = activities.map(activity => {
+            const date = new Date(activity.ActivityPlannedDate);
+            return {
+                ...activity,
+                ActivityPlannedDateFormatted: date.toDateString() // returns "Tue Oct 10 2000"
+            };
+        });
+        res.render('activity', {
+            title: 'Activity List',
+            activities: formattedActivities
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Failed to load activities.');
+    }
+});
+
+//Delete an activity
+app.post('/deleteActivity/:id', async (req, res) => {
+    try {
+        await Activity.findByIdAndDelete(req.params.id);
+        res.redirect('activity');
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Error deleting activity.');
+    }
+});
+
+//Registration/Login/Logout Related codes
 //Save users
 app.post('/users', async(req,res) => {
     try
@@ -316,67 +324,42 @@ app.get('/logout', (req, res) => {
 });
 
 
-// app.get('/activities', async (req,res) => {
-//     //console.log("Fetched Activities:", activities);
-//     try{
-//         const activities = await Activity.find(); 
-//         res.render('activityview', 
-//             { 
-//                 activities: activities.map(activity => activity.toJSON())
-//             });
-           
-//         }      
-//      catch (err) {
-//                 console.error(err);
-//                 res.status(500).send('Server Error'); // So browser gets some error message instead of hanging
-//             }
-// //     // } 
-// //     // catch (error) {
-// //     //     //console.error('Error fetching activities:', error);
-// //     //     res.status(500).send('Server error');
-// //     // }
-// })
+//Render activity Dashboard
+app.get('/activityDashboard', async (req, res) => {
+    try {
+        const activities = await Activity.find().lean();
+        const formattedActivities = activities.map(activity => {
+            const date = new Date(activity.ActivityPlannedDate);
+            return {
+                ...activity,
+                ActivityPlannedDateFormatted: date.toDateString()
+            };
+        });
 
-
-//Get All Activities
-// GET all activities
-app.get('/ActivityTracker', async (req, res) => {
-    //console.log("Fetched Activities:", activities);
-    try 
-    {
-        const activities = await Activity.find(); 
-        res.render('ActivityTracker', 
-            { 
-                activities : activities.map(activities => activities.toJSON())
-            });
-
-    } catch (error) {
-        console.error('Error fetching activities:', error);
-        res.status(500).send('Server error');
+        res.render('activityDashboard', {
+            title: 'Activity Dashboard',
+            activities: formattedActivities
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Failed to load dashboard.');
     }
 });
 
-/* app.get('/activities', async (req, res) => {
+//Update activity status
+app.post('/updateActivityStatus/:id', async (req, res) => {
     try {
-        const activities = await Activity.find().lean(); // Fetch data as plain JS objects
-        console.log("Fetched Activities:", activities); // Check if activities are correctly fetched
-        res.render('activityTracker', { activities });
-    } catch (error) {
-        console.error('Error fetching activities:', error);
-        res.status(500).send('Server error');
+        await Activity.findByIdAndUpdate(req.params.id, {
+            activityStatus: req.body.status
+        });
+        res.redirect('/activityDashboard');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Failed to update activity status.');
     }
-}); */
+});
 
-/* 
-//API get all activities
-app.get('/activities', async (req, res) => {
-    try {
-        const result = await Activity.find(); 
-       // res.json(result);
-       res.render('activityTracker', { activities });
-    } catch (error) {
-       //console.log(error);
-       console.error('Error fetching activities:', error);
-        res.status(500).send('Server error');
-    }
-}); */
+
+
+
+
