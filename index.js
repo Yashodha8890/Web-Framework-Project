@@ -110,15 +110,22 @@ app.get('/addExpense',(req,res) => {
     });
 });
 
-//add expense date to database
+//expenseDashboart.handlebars
+app.get('/expenseDashboard',(req,res) => {
+    res.render('expenseDashboard',{
+        title: "Expense Dashboard"
+    });
+});
+
+//add expense data to database
 app.post('/addExpense', async(req,res) => {
     try
     {
         const newExpenses = new Expense(req.body)
         await newExpenses.save();
-        res.send('added expense!!');
-    }
-
+        //res.send('added expense!!');
+        res.redirect('/viewExpense');
+}
     catch(err)
     {
         console.log(err);
@@ -126,6 +133,7 @@ app.post('/addExpense', async(req,res) => {
     }
     
 })
+
 //get all expenses from MongoDB and print to the webpage
 app.get('/viewExpense', async (req, res) => {
     try {

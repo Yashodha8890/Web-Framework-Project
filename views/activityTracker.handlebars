@@ -1,63 +1,32 @@
-<div class="d-flex">
-  <!-- Sidebar -->
-  <nav id="sidebar" class="">
-    <div class="sidebar-header p-3">
-      <img src="/images/Logo DRT.jpg" alt="Logo" class="logo-img mb-2">
-      <h4>Daily Routing Tracker</h4>
-    </div>
-    <ul class="nav flex-column">
-
-      <li class="nav-item">
-        <a class="nav-link" href="/">Home</a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#activityMenu" role="button">
-          Activity Tracker
-        </a>
-        <ul class="collapse list-unstyled ps-3" id="activityMenu">
-          <li><a class="nav-link" href="http://localhost:3000/activity">Activity Log</a></li>
-          <li><a class="nav-link" href="http://localhost:3000/updateActivity">Activity Update</a></li>
-        </ul>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#expenseMenu" role="button">
-          Expense Tracker
-        </a>
-        <ul class="collapse list-unstyled ps-3" id="expenseMenu">
-          <li><a class="nav-link" href="/expense/sub1">Sub 1</a></li>
-          <li><a class="nav-link" href="/expense/sub2">Sub 2</a></li>
-          <li><a class="nav-link" href="/expense/sub3">Sub 3</a></li>
-        </ul>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#dashboardMenu" role="button">
-          Dashboard
-        </a>
-        <ul class="collapse list-unstyled ps-3" id="dashboardMenu">
-          <li><a class="nav-link" href="http://localhost:3000/activityDashboard">Activity Dashboard</a></li>
-          <li><a class="nav-link" href="/dashboard/expense">Expense Dashboard</a></li>
-        </ul>
-      </li>
-
-      <li class="nav-item mt-3">
-        <span class="nav-link">Hello!! {{user.userName}}</span>
-        <a href="/logout" class="btn btn-sm btn-outline-light mt-2">Logout</a>
-      </li>
-
-    </ul>
-  </nav>
-
-  <!-- Main Content -->
-  <main class="flex-grow-1 p-4">
-    <h1 style="text-align: center;">Activity Tracker</h1>
+<div class="container-activity">
     <div class="row">
-        <div class="col-lg-6">
-            <!-- Save Activity Form -->
-            <div class="containerSaveActivity">
-                <form class="row g-3" action="/saveActivity" method="post">
+        <div class="col-sm-3 flex-column">
+            <nav class="nav flex-column">
+            <a href="#"><img src="images/Logo DRT.jpg" alt="Logo" href="index.handlebars"></a>
+            <a class="btn btn-primary" style="font-size:25px"href="http://localhost:3000/home">Home</a>
+            <a class="btn btn-primary" style="font-size:25px"href="">Activity Tracker</a>
+            <a class="btn btn-primary" style="font-size:25px"href="http://localhost:3000/addExpense">Money Tracker</a>
+            <a class="btn btn-primary" style="font-size:25px"href="">Dashboard</a>
+            <a class="btn btn-primary" style="font-size:25px"href="">Profile</a>          
+        </div>
+        <div class="col-sm-9">
+            <div class="activityHeader">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h1 class="text-center adminheader-h1">Daily Routine Tracker</h1>
+                    </div>
+                    <div class="col-sm-8">
+                        <a class="btn btn-primary" style="font-size:25px"href="">Activity Log</a>
+                        <a class="btn btn-primary" style="font-size:25px"href="">Activity Progress</a>
+                    </div>                
+                </div>
+            </div>
+            <h3 class="activity-title">Activity Log</h3> 
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="containerSaveActivity">
+                    <h4 class="activity-title">Save Your Activity</h4>
+                    <form class="row g-3" action="/saveActivity" method="post">
                         <div class="col-sm-3">
                             <label for="inputActivityName" class="form-label">Activity Title :</label><br>
                             <label for="inputActivityDescription" class="form-label">Description :</label><br><br>
@@ -90,11 +59,14 @@
                                 <br>
                             <select id="ActivityType" name="activityType" required>
                                 <option value="select">Select</option>
-                                <option value="hourly">Hourly</option>
-                                <option value="daily">Daily</option>
-                                <option value="weekly">Weekly</option>
-                                <option value="monthly">Monthly</option>
-                                <option value="yearly">Yearly</option>
+                                <option value="meditation">Meditation</option>
+                                <option value="journaling">Journaling</option>
+                                <option value="gym Workout">Gym Workout</option>
+                                <option value="running">Running</option>
+                                <option value="stretching">Stretching</option>
+                                <option value="sports">Sports</option>
+                                <option value="mealTracking">Meal Tracking</option>
+                                <option value="waterIntake">Water Intake</option>
                             </select>
                             <br>
                             <select id="ActivityPriority" name="activityPriority" required>
@@ -109,12 +81,10 @@
                             <button type="submit" class="btn btn-primary">Reset</button>
                         </div>
                         </form>
-            </div>
-        </div>
-
-        <div class="col-lg-6">
-            <!-- Save Activity category Form -->
-            <form action="/saveCatergory" method="post">
+                </div>
+                </div>
+                <div class="col-lg-6">
+                    <form action="/saveCatergory" method="post">
                     <div class="containerSaveActivityCategory">
                     <h4 class="activity-title">Save Activity Categories</h4>
                     <div class="row">
@@ -133,7 +103,7 @@
                     </div>
                     </div>
                     </form>
-                    <br>
+                <div class="row">
                     <form action="/saveActivityType" method="post">
                          <div class="containerSaveActivityCategory">
                             <h4 class="activity-title">Save Activity types</h4>
@@ -164,58 +134,50 @@
                                     <button type="submit" class="btn btn-primary">Reset</button>
                                 </div>
                             </div>
-                            
                         </div>
                     </form>
-        </div>        
-</div>    
-</div>   
-    
-<div class="container-viewActivity">
-  <h1 style="text-align: center;">{{title}}</h1>
-  <div class="table-container">
-  <table class="activity-table" border="1" cellpadding="10">
-            <thead>
-            <tr>
-                <th style="width: 17%;">Activity Name</th>
-                <th style="width: 17%;">Description</th>
-                <th style="width: 12%;">Planned Date</th>
-                <th style="width: 8%;">Start Time</th>
-                <th style="width: 8%;">End Time</th>
-                <th style="width: 10%;">Status</th>
-                <th style="width: 10%;">Category</th>
-                <th style="width: 10%;">Type</th>
-                <th style="width: 8%;">Priority</th>
-                <th style="width: 15%;">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {{#each activities}}
-            <tr>
-                <td style="width: 17%;">{{this.activityName}}</td>
-                <td style="width: 14%;">{{this.activityDescription}}</td>
-                <td style="width: 10%;">{{this.ActivityPlannedDateFormatted}}</td>
-                <td style="width: 8%;">{{this.ActivityStartTime}}</td>
-                <td style="width: 8%;">{{this.ActivityEndTime}}</td>
-                <td style="width: 10%;">{{this.activityStatus}}</td>
-                <td style="width: 10%;">{{this.activityCatergory}}</td>
-                <td style="width: 8%;">{{this.activityType}}</td>
-                <td style="width: 15%;">{{this.activityPriority}}</td>
-                <td>
-                <div class="action-buttons">
-                    <form action="/deleteActivity/{{this._id}}" method="post">
-                        <button type="submit" class="delete" onclick="return confirm('Are you sure?')">Delete</button>
-                    </form>
-                    <form action="/updateActivity/{{this._id}}" method="get">
-                        <button type="submit" class="update">Update</button>
-                    </form>
+                   
                 </div>
-                </td>
-            </tr>
-            {{/each}}
-        </tbody>
-    </table>  
+                </div>
+            <div class="row">
+    <div class="containerActivityList">
+        <h4 class="activity-title">Activity List</h4>
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Activity Name</th>
+                    <th>Description</th>
+                    <th>Planned Date</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Status</th>
+                    <th>Category</th>
+                    <th>Type</th>
+                    <th>Priority</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each activities}}
+                    <tr>
+                        <td>{{id}}</td>
+                        <td>{{activityName}}</td>
+                        <td>{{activityDescription}}</td>
+                        <td>{{ActivityPlannedDate}}</td>
+                        <td>{{ActivityStartTime}}</td>
+                        <td>{{ActivityEndTime}}</td>
+                        <td>{{activityStatus}}</td>
+                        <td>{{activityCatergory}}</td>
+                        <td>{{activityType}}</td>
+                        <td>{{activityPriority}}</td>
+                        <td>
+                            <button class="btn btn-primary">Edit</button>
+                            <button class="btn btn-danger">Delete</button>
+                        </td>
+                    </tr>
+                {{/each}}
+            </tbody>
+    </table>
     </div>
-</div>
-  </main>
 </div>

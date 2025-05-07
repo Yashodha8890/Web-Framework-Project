@@ -1,22 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Record Expense</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  
-</head>
-<body >
+
 <div class="container-activity">
     <div class="row">
         <div class="col-sm-3 flex-column">
             <nav class="nav flex-column">
             <a href="#"><img src="images/Logo DRT.jpg" alt="Logo" href="index.handlebars"></a>
             <a class="bg-green-600 text-white w-full py-2 rounded-lg hover:bg-green-500 flex justify-center items-center"
- style="font-size:25px"href="index.handlebars">Home</a>
+ style="font-size:25px"href="http://localhost:3000/home">Home</a>
             <a class="bg-green-600 text-white w-full py-2 rounded-lg hover:bg-green-500 flex justify-center items-center"
-" style="font-size:25px"href="/activityTracker">Activity Tracker</a>
+" style="font-size:25px"href="http://localhost:3000/activityTracker">Activity Tracker</a>
             <a class="bg-green-600 text-white w-full py-2 rounded-lg hover:bg-green-500 flex justify-center items-center"
 " style="font-size:25px"href="/addExpense">Money Tracker</a>
             <a class="bg-green-600 text-white w-full py-2 rounded-lg hover:bg-green-500 flex justify-center items-center"
@@ -27,16 +18,12 @@
         </div>
   <div class="bg-white rounded-2xl shadow-xl p-6 max-w-2xl w-full">
     <div class="flex justify-between items-center mb-4">
-      <button class="text-xl"><a class="btn btn-primary" style="font-size:25px"href="/activityTracker">←</a></button>
-      <h1 class="text-xl font-bold">Record Expense</h1>
-      <button class="border p-2 rounded-lg text-sm">
-        <input type="date" id="today" name="birthday"></button>
-      
-      
+    <h1 class="text-xl font-bold ">Record Expense</h1>
+    
     </div>
 
     <form action="/addExpense" method="POST"  >
-
+      
       <div class="mb-4">
         <label class="font-medium">Amount Spent</label>
         <input type="number" name="amount" class="border mt-2 w-full p-2 rounded" placeholder="$">
@@ -55,6 +42,28 @@
           <option>Shopping</option>
         </select>
         
+      </div>
+
+      <div class="mb-4">
+        <label class="font-medium">Due Date</label>
+        <input type="date" id="dueDate" class="border mt-2 w-full p-2 rounded" name="dueDate" required><br>
+      </div>
+
+      <div class="mb-4">
+        <label class="font-medium">Paid date</label>
+        <input type="date" id="paidDate" class="border mt-2 w-full p-2 rounded" name="paidDate" ><br>
+      </div>
+
+      <div class="mb-4">
+        <label class="font-medium">Payment status</label>
+        <select name="status" class="border w-full p-2 mt-2 rounded">
+          <option>Planned</option>
+          <option>Due</option>
+          <option>Paid</option>
+          <option>Partialy paid</option>
+          <option>Overdue</option>
+          <option>Cancelled</option>
+        </select>
       </div>
 
       <div class="mb-4">
@@ -86,5 +95,4 @@
 
   </div>
 
-  </body>
-</html>
+  
