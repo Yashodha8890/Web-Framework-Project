@@ -110,6 +110,13 @@ app.get('/addExpense',(req,res) => {
     });
 });
 
+//expenseDashboart.handlebars
+app.get('/expenseDashboard',(req,res) => {
+    res.render('expenseDashboard',{
+        title: "Expense Dashboard"
+    });
+});
+
 //add expense data to database
 app.post('/addExpense', async(req,res) => {
     try
