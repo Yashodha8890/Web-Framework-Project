@@ -119,22 +119,15 @@ app.get('/addExpense',(req,res) => {
     });
 });
 
-//expenseDashboart.handlebars
-app.get('/expenseDashboard',(req,res) => {
-    res.render('expenseDashboard',{
-        title: "Expense Dashboard"
-    });
-});
-
-//add expense data to database
+//add expense date to database
 app.post('/addExpense', async(req,res) => {
     try
     {
         const newExpenses = new Expense(req.body)
         await newExpenses.save();
-        //res.send('added expense!!');
-        res.redirect('/viewExpense');
-}
+        res.send('added expense!!');
+    }
+
     catch(err)
     {
         console.log(err);
@@ -142,7 +135,6 @@ app.post('/addExpense', async(req,res) => {
     }
     
 })
-
 //get all expenses from MongoDB and print to the webpage
 app.get('/viewExpense', async (req, res) => {
     try {
@@ -275,12 +267,54 @@ app.get('/activity', async (req, res) => {
 app.post('/deleteActivity/:id', async (req, res) => {
     try {
         await Activity.findByIdAndDelete(req.params.id);
-        res.redirect('activity');
+        res.redirect('/activity');
     } catch (err) {
         console.log(err);
         res.status(500).send('Error deleting activity.');
     }
 });
+
+// GET route to show the update form
+app.get('/updateActivity/:id', async (req, res) => {
+    try {
+        const activity = await Activity.findById(req.params.id).lean();
+        if (!activity) return res.status(404).send('Activity not found');
+
+        // Format date if needed
+        const date = new Date(activity.ActivityPlannedDate);
+        activity.ActivityPlannedDateFormatted = date.toISOString().split('T')[0]; // yyyy-mm-dd for input type="date"
+
+        res.render('updateActivity', {
+            title: 'Update Activity',
+            activity
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error loading activity for update.');
+    }
+});
+
+// POST route to handle update
+app.post('/updateActivity/:id', async (req, res) => {
+    try {
+        await Activity.findByIdAndUpdate(req.params.id, {
+            activityName: req.body.activityName,
+            activityDescription: req.body.activityDescription,
+            ActivityPlannedDate: req.body.ActivityPlannedDate,
+            ActivityStartTime: req.body.ActivityStartTime,
+            ActivityEndTime: req.body.ActivityEndTime,
+            activityStatus: req.body.activityStatus,
+            activityCatergory: req.body.activityCatergory,
+            activityType: req.body.activityType,
+            activityPriority: req.body.activityPriority
+        });
+        res.redirect('/activity');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error updating activity.');
+    }
+});
+
 
 //Registration/Login/Logout Related codes
 //Save users
@@ -457,8 +491,3 @@ app.post('/updateActivityStatus/:id', async (req, res) => {
         res.status(500).send('Failed to update activity status.');
     }
 });
-
-
-
-
-
