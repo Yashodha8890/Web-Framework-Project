@@ -39,10 +39,7 @@ const expenseSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
-    // date: {
-    //     type: Date,
-    //     default: Date.now
-    //},
+    
     receipt: {
         type: String // For storing file path or file URL if you handle uploads
     },
