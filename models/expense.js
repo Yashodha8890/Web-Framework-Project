@@ -12,6 +12,24 @@ const expenseSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+
+    
+    dueDate: {
+        type: Date,
+        required: true
+    },
+
+    paidDate: {
+        type: Date,
+        required: false
+    },
+
+    status: {
+        type: String,
+        enum: ['Planned', 'Due', 'Paid', 'Partially paid', 'Overdue', 'Cancelled'],
+        default: 'Planned'
+      },
+
     paymentMethod: {
         type: String,
         enum: ['Cash', 'Credit Card', 'Debit Card', 'Bank Transfer', 'Digital Wallet'], // options from your form
