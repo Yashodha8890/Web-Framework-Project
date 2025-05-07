@@ -1,12 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Update Expense</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 p-8">
-  <div class="max-w-xl mx-auto bg-white shadow-md rounded-lg p-6">
+
+<div class="container-activity">
+    <div class="row">
+        <div class="col-sm-3 flex-column">
+            <nav class="nav flex-column">
+            <a href="#"><img src="images/Logo DRT.jpg" alt="Logo" href="index.handlebars"></a>
+            <a class="bg-green-600 text-white w-full py-2 rounded-lg hover:bg-green-500 flex justify-center items-center"
+ style="font-size:25px"href="index.handlebars">Home</a>
+            <a class="bg-green-600 text-white w-full py-2 rounded-lg hover:bg-green-500 flex justify-center items-center"
+" style="font-size:25px"href="/activityTracker">Activity Tracker</a>
+            <a class="bg-green-600 text-white w-full py-2 rounded-lg hover:bg-green-500 flex justify-center items-center"
+" style="font-size:25px"href="/addExpense">Money Tracker</a>
+            <a class="bg-green-600 text-white w-full py-2 rounded-lg hover:bg-green-500 flex justify-center items-center"
+" style="font-size:25px"href="">Dashboard</a>
+            <a class="bg-green-600 text-white w-full py-2 rounded-lg hover:bg-green-500 flex justify-center items-center"
+" style="font-size:25px"href="">Profile</a>
+          
+        </div>
+  <div class="bg-white rounded-2xl shadow-xl p-6 max-w-2xl w-full">
     <h1 class="text-2xl font-bold mb-4 text-center">Update Expense</h1>
     
     <form action="/updateExpense/{{expense._id}}" method="POST" class="space-y-4">
