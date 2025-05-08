@@ -33,45 +33,12 @@ mongoose.connect(dbUIRI)
         console.log(err);
     })
 
-
 //Middlewares
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-
-//this code says that defaults settings we are using the main.handlebars
-app.engine('handlebars', exphbs.engine({
-    defaultLayout: 'main'
-}));
-
-
-//This is to indicate we use handlebars further
-app.set('view engine', 'handlebars');
-
-//This is the folder which contains files like css, imgs
-app.use(express.static('public'));
-
-
-
-//session
-app.use(session({
-    secret: 'your-secret-key',  // A secret key to sign the session ID cookie
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false }  // Set to true if using HTTPS
-}));
-
 // Define the custom helper to convert objects to JSON
-/* const handlebars = exphbs.create({
-    helpers: {
-      json: function(context) {
-        return JSON.stringify(context);
-      }
-    }
-  }); */
-
- //newly added
-  const handlebars = exphbs.create({
+const handlebars = exphbs.create({
     defaultLayout: 'main',
     helpers: {
       json: function (context) {
@@ -82,14 +49,26 @@ app.use(session({
       }
     }
   });
+app.engine('handlebars', handlebars.engine);
 
-  
-  
+//this code says that defaults settings we are using the main.handlebars
+app.engine('handlebars', exphbs.engine({
+    defaultLayout: 'main'
+}));
 
-  //newly added
-  app.engine('handlebars', handlebars.engine);
+//This is to indicate we use handlebars further
 app.set('view engine', 'handlebars');
 
+//This is the folder which contains files like css, imgs
+app.use(express.static('public'));
+
+//session
+app.use(session({
+    secret: 'your-secret-key',  // A secret key to sign the session ID cookie
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }  // Set to true if using HTTPS
+}));
 
 //Routes
 //index.handlebars
@@ -271,7 +250,7 @@ app.get('/activity', async (req, res) => {
             const date = new Date(activity.ActivityPlannedDate);
             return {
                 ...activity,
-                ActivityPlannedDateFormatted: date.toDateString()
+                ActivityPlannedDateFormatted: date.toDateString() 
             };
         });
         res.render('activity', {
