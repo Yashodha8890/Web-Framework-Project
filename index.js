@@ -120,9 +120,6 @@ app.get('/addExpense',(req,res) => {
 });
 
 
-//add expense date to database
-
-//////////////////////////////////////////////////////////////////////
 //expenseDashboart.handlebars
 app.get('/expenseDashboard', async (req, res) => {
     try {
@@ -157,16 +154,17 @@ app.get('/expenseDashboard', async (req, res) => {
       res.status(500).send("Server Error");
     }
   });
-////////////////////////////////////////////////////////////////
+
 //add expense data to database
 app.post('/addExpense', async(req,res) => {
     try
     {
         const newExpenses = new Expense(req.body)
         await newExpenses.save();
-        res.send('added expense!!');
+        //res.send('added expense!!');
+        res.redirect('/viewExpense');
     }
-
+      
     catch(err)
     {
         console.log(err);
