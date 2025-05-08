@@ -408,7 +408,7 @@ app.post('/users', async(req,res) => {
         const newUserRegistration = new UserRegistration(req.body)
         await newUserRegistration.save();
         //res.send('user registered!!');
-        res.render('login')
+        res.redirect('login')
     }
     catch(err)
     {

@@ -1,135 +1,139 @@
-  <!-- Main Content -->
 
-  <form method="GET" action="/activityDashboard" class="mb-4">
-  <div class="row g-3 align-items-end">
-    <!-- Date Filter -->
-    <div class="col-md-3">
-      <label for="filterDate" class="form-label">Filter by Date:</label>
-      <input type="date" id="filterDate" name="date" value="{{filters.date}}" class="form-control">
-    </div>
 
-    <!-- Status -->
-    <div class="col-md-3">
-      <label for="activityStatus" class="form-label">Filter by Status:</label>
-      <select id="activityStatus" name="status" class="form-select">
-        <option value="All" {{#if (eq filters.status 'All')}}selected{{/if}}>All</option>
-        {{#each possibleStatuses}}
-          <option value="{{this}}" {{#if (eq ../filters.status this)}}selected{{/if}}>{{this}}</option>
-        {{/each}}
-      </select>
-    </div>
 
-    <div class="col-md-3 d-flex">
-      <button type="submit" class="btn btn-primary me-2">Apply Filters</button>
-      <a href="/activityDashboard" class="btn btn-secondary">Clear Filters</a>
-    </div>
-  </div>
-</form>
+ <div class="dashboard-container">
+    <form method="GET" action="/activityDashboard" class="mb-4">
+      <div class="row g-3 align-items-end">
+        <!-- Date Filter -->
+        <div class="col-md-3">
+          <label for="filterDate" class="form-label">Filter by Date:</label>
+          <input type="date" id="filterDate" name="date" value="{{filters.date}}" class="form-control">
+        </div>
 
-<div class="row">
-<div class="table-responsive mb-4">
-      <table class="table table-bordered table-hover align-middle">
-        <thead class="table-dark">
-          <tr>
-            <th>Activity</th>
-            <th>Date</th>
-            <th>Type</th>
-            <th>Status</th>
-            <th>Change Status</th>
-          </tr>
-        </thead>
-        <tbody id="activityTable">
-          {{#each activities}}
-          <tr data-type="{{this.activityType}}">
-            <td>{{this.activityName}}</td>
-            <td>{{this.ActivityPlannedDateFormatted}}</td>
-            <td>{{this.activityType}}</td>
-            <td class="status">{{this.activityStatus}}</td>
-            <td>
-              <form action="/updateActivityStatus/{{this._id}}" method="POST">
-                <select name="status" class="form-select" onchange="this.form.submit()">
-                  <option disabled selected>Change</option>
-                  <option value="Pending">Pending</option>
-                  <option value="InProgress">InProgress</option>
-                  <option value="Completed">Completed</option>
-                  <option value="Cancelled">Cancelled</option>
-                  <option value="Postponed">Postponed</option>
-                  <option value="Abandoned">Abandoned</option>
-                </select>
-              </form>
-            </td>
-          </tr>
-          {{/each}}
-        </tbody>
-      </table>
-    </div>
-    </div>
+        <!-- Status -->
+        <div class="col-md-3">
+          <label for="activityStatus" class="form-label">Filter by Status:</label>
+          <select id="activityStatus" name="status" class="form-select">
+            <option value="All" {{#if (eq filters.status 'All')}}selected{{/if}}>All</option>
+            {{#each possibleStatuses}}
+              <option value="{{this}}" {{#if (eq ../filters.status this)}}selected{{/if}}>{{this}}</option>
+            {{/each}}
+          </select>
+        </div>
+
+        <div class="col-md-3 d-flex">
+          <button type="submit" class="btn btn-primary me-2">Apply Filters</button>
+          <a href="/activityDashboard" class="btn btn-secondary">Clear Filters</a>
+        </div>
+      </div>
+    </form>
 
     <div class="row">
-      <div class="col-md-6">
-        <canvas id="statusChart"></canvas>
-      </div>
-      <div class="col-md-6">
-        <canvas id="completionChart"></canvas>
-      </div>
+    <div class="table-responsive mb-4">
+          <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>Activity</th>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Change Status</th>
+              </tr>
+            </thead>
+            <tbody id="activityTable">
+              {{#each activities}}
+              <tr data-type="{{this.activityType}}">
+                <td>{{this.activityName}}</td>
+                <td>{{this.ActivityPlannedDateFormatted}}</td>
+                <td>{{this.activityType}}</td>
+                <td class="status">{{this.activityStatus}}</td>
+                <td>
+                  <form action="/updateActivityStatus/{{this._id}}" method="POST">
+                    <select name="status" class="form-select" onchange="this.form.submit()">
+                      <option disabled selected>Change</option>
+                      <option value="Pending">Pending</option>
+                      <option value="InProgress">InProgress</option>
+                      <option value="Completed">Completed</option>
+                      <option value="Cancelled">Cancelled</option>
+                      <option value="Postponed">Postponed</option>
+                      <option value="Abandoned">Abandoned</option>
+                    </select>
+                  </form>
+                </td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <canvas id="statusChart"></canvas>
+          </div>
+          <div class="col-md-6">
+            <canvas id="completionChart"></canvas>
+          </div>
+        </div>
+      </main>
     </div>
-  </main>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  const typeFilter = document.getElementById('activityType');
-  const rows = document.querySelectorAll('#activityTable tr');
-  typeFilter?.addEventListener('change', () => {
-    const selected = typeFilter.value;
-    rows.forEach(row => {
-      row.style.display = (selected === 'All' || row.dataset.type === selected) ? '' : 'none';
-    });
-  });
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      const typeFilter = document.getElementById('activityType');
+      const rows = document.querySelectorAll('#activityTable tr');
+      typeFilter?.addEventListener('change', () => {
+        const selected = typeFilter.value;
+        rows.forEach(row => {
+          row.style.display = (selected === 'All' || row.dataset.type === selected) ? '' : 'none';
+        });
+      });
 
-  // Injected JSON objects
-  const statusCounts = {{{statusCountsJSON}}};
-  const statusPercentages = {{{statusPercentagesJSON}}};
+      // Injected JSON objects
+      const statusCounts = {{{statusCountsJSON}}};
+      const statusPercentages = {{{statusPercentagesJSON}}};
 
-  const ctx1 = document.getElementById('statusChart').getContext('2d');
-  const statusChart = new Chart(ctx1, {
-    type: 'pie',
-    data: {
-      labels: ['Pending', 'InProgress', 'Completed', 'Cancelled', 'Postponed', 'Abandoned'],
-      datasets: [{
-        label: 'Status Distribution',
-        data: [
-          statusCounts["Pending"],
-          statusCounts["InProgress"],
-          statusCounts["Completed"],
-          statusCounts["Cancelled"],
-          statusCounts["Postponed"],
-          statusCounts["Abandoned"]
-        ],
-        backgroundColor: ['gray', 'orange', 'green', 'red', 'blue', 'brown']
-      }]
-    }
-  });
+      const ctx1 = document.getElementById('statusChart').getContext('2d');
+      const statusChart = new Chart(ctx1, {
+        type: 'pie',
+        data: {
+          labels: ['Pending', 'InProgress', 'Completed', 'Cancelled', 'Postponed', 'Abandoned'],
+          datasets: [{
+            label: 'Status Distribution',
+            data: [
+              statusCounts["Pending"],
+              statusCounts["InProgress"],
+              statusCounts["Completed"],
+              statusCounts["Cancelled"],
+              statusCounts["Postponed"],
+              statusCounts["Abandoned"]
+            ],
+            backgroundColor: ['gray', 'orange', 'green', 'red', 'blue', 'brown']
+          }]
+        }
+      });
 
-  const ctx2 = document.getElementById('completionChart').getContext('2d');
-  const completionChart = new Chart(ctx2, {
-    type: 'bar',
-    data: {
-      labels: ['Pending', 'InProgress', 'Completed', 'Cancelled', 'Postponed', 'Abandoned'],
-      datasets: [{
-        label: '% of Total Activities',
-        data: [
-          statusPercentages["Pending"],
-          statusPercentages["InProgress"],
-          statusPercentages["Completed"],
-          statusPercentages["Cancelled"],
-          statusPercentages["Postponed"],
-          statusPercentages["Abandoned"]
-        ],
-        backgroundColor: ['gray', 'orange', 'green', 'red', 'blue', 'brown']
-      }]
-    }
-  });
-</script>
+      const ctx2 = document.getElementById('completionChart').getContext('2d');
+      const completionChart = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ['Pending', 'InProgress', 'Completed', 'Cancelled', 'Postponed', 'Abandoned'],
+          datasets: [{
+            label: '% of Total Activities',
+            data: [
+              statusPercentages["Pending"],
+              statusPercentages["InProgress"],
+              statusPercentages["Completed"],
+              statusPercentages["Cancelled"],
+              statusPercentages["Postponed"],
+              statusPercentages["Abandoned"]
+            ],
+            backgroundColor: ['gray', 'orange', 'green', 'red', 'blue', 'brown']
+          }]
+        }
+      });
+    </script>
 </div>
     
+ </div> 
+  
