@@ -37,20 +37,6 @@ mongoose.connect(dbUIRI)
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// Define the custom helper to convert objects to JSON
-const handlebars = exphbs.create({
-    defaultLayout: 'main',
-    helpers: {
-      json: function (context) {
-        return JSON.stringify(context);
-      },
-      eq: function (a, b) {
-        return a === b;
-      }
-    }
-  });
-app.engine('handlebars', handlebars.engine);
-
 //this code says that defaults settings we are using the main.handlebars
 app.engine('handlebars', exphbs.engine({
     defaultLayout: 'main'
@@ -69,6 +55,20 @@ app.use(session({
     saveUninitialized: true,
     cookie: { secure: false }  // Set to true if using HTTPS
 }));
+
+// Define the custom helper to convert objects to JSON
+const handlebars = exphbs.create({
+    defaultLayout: 'main',
+    helpers: {
+      json: function (context) {
+        return JSON.stringify(context);
+      },
+      eq: function (a, b) {
+        return a === b;
+      }
+    }
+  });
+app.engine('handlebars', handlebars.engine);
 
 //Routes
 //index.handlebars
