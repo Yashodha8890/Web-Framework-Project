@@ -1,28 +1,63 @@
 
-<div class="container-activity">
-    <div class="row">
-        <div class="col-sm-3 flex-column">
-            <nav class="nav flex-column">
-            <a href="#"><img src="images/Logo DRT.jpg" alt="Logo" href="index.handlebars"></a>
-            <a class="bg-green-600 text-white w-full py-2 rounded-lg hover:bg-green-500 flex justify-center items-center"
- style="font-size:25px"href="http://localhost:3000/home">Home</a>
-            <a class="bg-green-600 text-white w-full py-2 rounded-lg hover:bg-green-500 flex justify-center items-center"
-" style="font-size:25px"href="http://localhost:3000/activityTracker">Activity Tracker</a>
-            <a class="bg-green-600 text-white w-full py-2 rounded-lg hover:bg-green-500 flex justify-center items-center"
-" style="font-size:25px"href="/addExpense">Money Tracker</a>
-            <a class="bg-green-600 text-white w-full py-2 rounded-lg hover:bg-green-500 flex justify-center items-center"
-            style="font-size:25px" href="http://localhost:3000/activityDashboard">Activity Dashboard</a>
-            <a class="bg-green-600 text-white w-full py-2 rounded-lg hover:bg-green-500 flex justify-center items-center"
-            style="font-size:25px" href="http://localhost:3000/expenseDashboard">Expense Dashboard</a>
-            <a class="bg-green-600 text-white w-full py-2 rounded-lg hover:bg-green-500 flex justify-center items-center"
-" style="font-size:25px"href="">Profile</a>
+<div class="container-activityNew">
+  <!-- Sidebar -->
+  <nav id="sidebar" class="">
+    <div class="sidebar-header p-3">
+      <img src="/images/Logo DRT.jpg" alt="Logo" class="logo-img mb-2">
+      <h4>Daily Routing Tracker</h4>
+    </div>
+    <ul class="nav flex-column">
+
+      <li class="nav-item">
+        <a class="nav-link" href="http://localhost:3000/home">Home</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#activityMenu" role="button">
+          Activity Tracker
+        </a>
+        <ul class="collapse list-unstyled ps-3" id="activityMenu">
+          <li><a class="nav-link" href="http://localhost:3000/activity">Activity Log</a></li>
+          <li><a class="nav-link" href="http://localhost:3000/updateActivity">Activity Update</a></li>
+        </ul>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#expenseMenu" role="button">
+          Expense Tracker
+        </a>
+        <ul class="collapse list-unstyled ps-3" id="expenseMenu">
+          <li><a class="nav-link" href="http://localhost:3000/addExpense">Expense Log</a></li>
+          <li><a class="nav-link" href="http://localhost:3000/viewExpense">Expense Update</a></li>
           
-        </div>
+        </ul>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#dashboardMenu" role="button">
+          Dashboard
+        </a>
+        <ul class="collapse list-unstyled ps-3" id="dashboardMenu">
+          <li><a class="nav-link" href="http://localhost:3000/activityDashboard">Activity Dashboard</a></li>
+          <li><a class="nav-link" href="http://localhost:3000/expenseDashboard">Expense Dashboard</a></li>
+        </ul>
+      </li>
+
+      <li class="nav-item mt-3">
+        <span class="nav-link">Hello!! {{user.userName}}</span>
+        <a href="/logout" class="btn btn-sm btn-outline-light mt-2">Logout</a>
+      </li>
+
+    </ul>
+  </nav>
+  
+
+  <!-- Main Content -->
+  <main class="flex-grow-1 pt-0 pr-8 pb-8 pl-8">
   <div class="bg-white rounded-2xl shadow-xl p-6 max-w-2xl w-full">
     <div class="flex justify-between items-center mb-4">
-    <h1 class="text-xl font-bold ">Record Expense</h1>
-    
-    </div>
+    <h1 class="text-4xl font-bold">Record Expense</h1>
+        </div>
 
     <form action="/addExpense" method="POST"  >
       
@@ -94,7 +129,7 @@
       <button type="submit" class="bg-green-600 text-white w-full py-2 rounded-lg hover:bg-green-700">Save Expense</button>
 
     </form>
-
+  </main>
   </div>
 
   
