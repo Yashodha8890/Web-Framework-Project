@@ -32,8 +32,6 @@ mongoose.connect(dbUIRI)
     {
         console.log(err);
     })
-require('dotenv').config();
-
 
 
 //Middlewares
@@ -53,6 +51,8 @@ app.set('view engine', 'handlebars');
 //This is the folder which contains files like css, imgs
 app.use(express.static('public'));
 
+
+
 //session
 app.use(session({
     secret: 'your-secret-key',  // A secret key to sign the session ID cookie
@@ -62,13 +62,34 @@ app.use(session({
 }));
 
 // Define the custom helper to convert objects to JSON
-const handlebars = exphbs.create({
+/* const handlebars = exphbs.create({
     helpers: {
       json: function(context) {
         return JSON.stringify(context);
       }
     }
+  }); */
+
+ //newly added
+  const handlebars = exphbs.create({
+    defaultLayout: 'main',
+    helpers: {
+      json: function (context) {
+        return JSON.stringify(context);
+      },
+      eq: function (a, b) {
+        return a === b;
+      }
+    }
   });
+
+  
+  
+
+  //newly added
+  app.engine('handlebars', handlebars.engine);
+app.set('view engine', 'handlebars');
+
 
 //Routes
 //index.handlebars
@@ -250,7 +271,7 @@ app.get('/activity', async (req, res) => {
             const date = new Date(activity.ActivityPlannedDate);
             return {
                 ...activity,
-                ActivityPlannedDateFormatted: date.toDateString() // returns "Tue Oct 10 2000"
+                ActivityPlannedDateFormatted: date.toDateString()
             };
         });
         res.render('activity', {
@@ -274,15 +295,15 @@ app.post('/deleteActivity/:id', async (req, res) => {
     }
 });
 
-// GET route to show the update form
+// updateActivity.handlebars - Fill the form with selected Avtivity data
 app.get('/updateActivity/:id', async (req, res) => {
     try {
         const activity = await Activity.findById(req.params.id).lean();
         if (!activity) return res.status(404).send('Activity not found');
 
-        // Format date if needed
+        // Format the date
         const date = new Date(activity.ActivityPlannedDate);
-        activity.ActivityPlannedDateFormatted = date.toISOString().split('T')[0]; // yyyy-mm-dd for input type="date"
+        activity.ActivityPlannedDateFormatted = date.toISOString().split('T')[0];
 
         res.render('updateActivity', {
             title: 'Update Activity',
@@ -294,7 +315,7 @@ app.get('/updateActivity/:id', async (req, res) => {
     }
 });
 
-// POST route to handle update
+// updateActivity.handlebars - Update Avtivity
 app.post('/updateActivity/:id', async (req, res) => {
     try {
         await Activity.findByIdAndUpdate(req.params.id, {
@@ -315,6 +336,90 @@ app.post('/updateActivity/:id', async (req, res) => {
     }
 });
 
+//Loading data to dashboard table according to the filters
+app.get('/activityDashboard', async (req, res) => {
+    try {
+      // Get filters from query string
+      const { status, date } = req.query;
+  
+      // Build dynamic query object
+      const query = {};
+      if (status && status !== 'All') {
+        query.activityStatus = status;
+      }
+      if (date) {
+        const selectedDate = new Date(date);
+        selectedDate.setUTCHours(0, 0, 0, 0);
+        const nextDate = new Date(selectedDate);
+        nextDate.setDate(nextDate.getDate() + 1);
+        query.ActivityPlannedDate = {
+          $gte: selectedDate,
+          $lt: nextDate
+        };
+      }
+  
+      // Fetch filtered data
+      const activities = await Activity.find(query).lean();
+  
+      // Format date for display
+      const formattedActivities = activities.map(activity => ({
+        ...activity,
+        ActivityPlannedDateFormatted: new Date(activity.ActivityPlannedDate).toDateString()
+      }));
+  
+      // Status count + percentage
+      const possibleStatuses = ['Pending', 'InProgress', 'Completed', 'Cancelled', 'Postponed', 'Abandoned'];
+      const statusCounts = {};
+      possibleStatuses.forEach(status => statusCounts[status] = 0);
+  
+      activities.forEach(activity => {
+        const status = activity.activityStatus?.trim();
+        if (status && statusCounts.hasOwnProperty(status)) {
+          statusCounts[status]++;
+        }
+      });
+  
+      const totalActivities = activities.length;
+      const statusPercentages = {};
+      for (const status in statusCounts) {
+        statusPercentages[status] = totalActivities > 0
+          ? Math.round((statusCounts[status] / totalActivities) * 100)
+          : 0;
+      }
+  
+      // Send everything to the view
+      res.render('activityDashboard', {
+        title: 'Activity Dashboard',
+        activities: formattedActivities,
+        statusCounts,
+        statusPercentages,
+        possibleStatuses,
+        statusCountsJSON: JSON.stringify(statusCounts),
+        statusPercentagesJSON: JSON.stringify(statusPercentages),
+        filters: {
+            status: status || 'All',
+            date: date || ''
+          }
+      });
+  
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Failed to load dashboard.');
+    }
+  });
+  
+//Update activity status
+app.post('/updateActivityStatus/:id', async (req, res) => {
+    try {
+        await Activity.findByIdAndUpdate(req.params.id, {
+            activityStatus: req.body.status
+        });
+        res.redirect('/activityDashboard');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Failed to update activity status.');
+    }
+});
 
 //Registration/Login/Logout Related codes
 //Save users
@@ -372,122 +477,4 @@ app.get('/logout', (req, res) => {
         res.clearCookie('connect.sid');  // Optional: to clear the session cookie
         res.redirect('/');  // Redirect to homepage after logout
     });
-});
-
-
-//Render activity Dashboard
-/* app.get('/activityDashboard', async (req, res) => {
-    try {
-      const activities = await Activity.find().lean();
-  
-      const formattedActivities = activities.map(activity => {
-        const date = new Date(activity.ActivityPlannedDate);
-        return {
-          ...activity,
-          ActivityPlannedDateFormatted: date.toDateString()
-        };
-      });
-  
-      // Count activity statuses
-      const statusCounts = {
-        pending: 0,
-        inProgress: 0,
-        completed: 0,
-        abandoned: 0,
-        postponed: 0
-      };
-  
-      activities.forEach(activity => {
-        const status = activity.activityStatus?.toLowerCase().replace(/\s/g, '');
-        if (statusCounts.hasOwnProperty(status)) {
-          statusCounts[status]++;
-        }
-      });
-  
-      const totalActivities = activities.length;
-      const statusPercentages = {};
-      for (const key in statusCounts) {
-        statusPercentages[key] = totalActivities > 0
-          ? Math.round((statusCounts[key] / totalActivities) * 100)
-          : 0;
-      }
-  
-      res.render('activityDashboard', {
-        title: 'Activity Dashboard',
-        activities: formattedActivities,
-        statusCounts,
-        statusPercentages
-      });
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Failed to load dashboard.');
-    }
-  }); */
-
-  app.get('/activityDashboard', async (req, res) => {
-    try {
-      const activities = await Activity.find().lean();
-  
-      const formattedActivities = activities.map(activity => {
-        const date = new Date(activity.ActivityPlannedDate);
-        return {
-          ...activity,
-          ActivityPlannedDateFormatted: date.toDateString()
-        };
-      });
-  
-      // Updated possibleStatuses to match DB format (no spaces)
-      const possibleStatuses = ['Pending', 'InProgress', 'Completed', 'Cancelled', 'Postponed', 'Abandoned'];
-  
-      const statusCounts = {};
-      possibleStatuses.forEach(status => {
-        statusCounts[status] = 0;
-      });
-  
-      activities.forEach(activity => {
-        const status = activity.activityStatus?.trim();
-        if (status && statusCounts.hasOwnProperty(status)) {
-          statusCounts[status]++;
-        }
-      });
-  
-      const totalActivities = activities.length;
-      const statusPercentages = {};
-      for (const status in statusCounts) {
-        statusPercentages[status] = totalActivities > 0
-          ? Math.round((statusCounts[status] / totalActivities) * 100)
-          : 0;
-      }
-  
-      res.render('activityDashboard', {
-        title: 'Activity Dashboard',
-        activities: formattedActivities,
-        statusCounts,
-        statusPercentages,
-        possibleStatuses,
-        statusCountsJSON: JSON.stringify(statusCounts),
-        statusPercentagesJSON: JSON.stringify(statusPercentages)
-      });
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Failed to load dashboard.');
-    }
-  });
-  
-  
-  
-  
-  
-
-//Update activity status
-app.post('/updateActivityStatus/:id', async (req, res) => {
-    try {
-        await Activity.findByIdAndUpdate(req.params.id, {
-            activityStatus: req.body.status
-        });
-        res.redirect('/activityDashboard');
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Failed to update activity status.');
-    }
 });

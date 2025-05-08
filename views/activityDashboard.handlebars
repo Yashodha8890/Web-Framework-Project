@@ -1,69 +1,33 @@
-<div class="d-flex">
-  <!-- Sidebar -->
-  <nav id="sidebar" class="bg-dark text-white min-vh-100">
-    <div class="sidebar-header p-3">
-      <img src="/images/Logo DRT.jpg" alt="Logo" class="logo-img mb-2" style="width: 100px;">
-      <h4>Daily Routing Tracker</h4>
-    </div>
-    <ul class="nav flex-column px-3">
-      <li class="nav-item">
-        <a class="nav-link text-white" href="/">Home</a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link text-white" data-bs-toggle="collapse" href="#activityMenu" role="button">
-          Activity Tracker
-        </a>
-        <ul class="collapse list-unstyled ps-3" id="activityMenu">
-          <li><a class="nav-link" href="http://localhost:3000/activity">Activity Log</a></li>
-          <li><a class="nav-link" href="http://localhost:3000/updateActivity">Activity Update</a></li>
-        </ul>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link text-white" data-bs-toggle="collapse" href="#expenseMenu" role="button">
-          Expense Tracker
-        </a>
-        <ul class="collapse list-unstyled ps-3" id="expenseMenu">
-          <li><a class="nav-link text-white" href="/expense/sub1">Sub 1</a></li>
-          <li><a class="nav-link text-white" href="/expense/sub2">Sub 2</a></li>
-          <li><a class="nav-link text-white" href="/expense/sub3">Sub 3</a></li>
-        </ul>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link text-white" data-bs-toggle="collapse" href="#dashboardMenu" role="button">
-          Dashboard
-        </a>
-        <ul class="collapse list-unstyled ps-3" id="dashboardMenu">
-          <li><a class="nav-link text-white" href="/dashboard/activity">Activity Dashboard</a></li>
-          <li><a class="nav-link text-white" href="/dashboard/expense">Expense Dashboard</a></li>
-        </ul>
-      </li>
-
-      <li class="nav-item mt-3 px-2">
-        <span class="nav-link text-white">Hello!! {{user.userName}}</span>
-        <a href="/logout" class="btn btn-sm btn-outline-light mt-2">Logout</a>
-      </li>
-    </ul>
-  </nav>
-
   <!-- Main Content -->
-  .container
-  <main class="flex-grow-1 p-4">
-    <h2 class="mb-4">Activity Dashboard</h2>
 
-    <div class="mb-3">
-      <label for="activityType" class="form-label">Filter by Type:</label>
-      <select id="activityType" class="form-select" style="max-width: 300px;">
-        <option value="All">All</option>
-        <option value="Daily">Daily</option>
-        <option value="Weekly">Weekly</option>
-        <option value="Monthly">Monthly</option>
+  <form method="GET" action="/activityDashboard" class="mb-4">
+  <div class="row g-3 align-items-end">
+    <!-- Date Filter -->
+    <div class="col-md-3">
+      <label for="filterDate" class="form-label">Filter by Date:</label>
+      <input type="date" id="filterDate" name="date" value="{{filters.date}}" class="form-control">
+    </div>
+
+    <!-- Status -->
+    <div class="col-md-3">
+      <label for="activityStatus" class="form-label">Filter by Status:</label>
+      <select id="activityStatus" name="status" class="form-select">
+        <option value="All" {{#if (eq filters.status 'All')}}selected{{/if}}>All</option>
+        {{#each possibleStatuses}}
+          <option value="{{this}}" {{#if (eq ../filters.status this)}}selected{{/if}}>{{this}}</option>
+        {{/each}}
       </select>
     </div>
 
-    <div class="table-responsive mb-4">
+    <div class="col-md-3 d-flex">
+      <button type="submit" class="btn btn-primary me-2">Apply Filters</button>
+      <a href="/activityDashboard" class="btn btn-secondary">Clear Filters</a>
+    </div>
+  </div>
+</form>
+
+<div class="row">
+<div class="table-responsive mb-4">
       <table class="table table-bordered table-hover align-middle">
         <thead class="table-dark">
           <tr>
@@ -98,6 +62,7 @@
           {{/each}}
         </tbody>
       </table>
+    </div>
     </div>
 
     <div class="row">
@@ -166,3 +131,5 @@
     }
   });
 </script>
+</div>
+    
