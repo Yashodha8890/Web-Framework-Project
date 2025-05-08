@@ -7,6 +7,8 @@ const ActivityCategories = require('./models/ActivityCategories');
 const UserRegistration = require('./models/UserRegistration');
 const Activity = require('./models/Activity');
 const ActivityTypes = require('./models/ActivityTypes');
+const sendEmail = require('./utils/mailer');
+const cron = require('node-cron');
 //added from Shammi's branch
 const viewExpense = require('./models/expenseView');
 const Expense = require('./models/expense');
@@ -32,20 +34,15 @@ mongoose.connect(dbUIRI)
     {
         console.log(err);
     })
-require('dotenv').config();
-
-
 
 //Middlewares
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-
 //this code says that defaults settings we are using the main.handlebars
 app.engine('handlebars', exphbs.engine({
     defaultLayout: 'main'
 }));
-
 
 //This is to indicate we use handlebars further
 app.set('view engine', 'handlebars');
@@ -63,12 +60,17 @@ app.use(session({
 
 // Define the custom helper to convert objects to JSON
 const handlebars = exphbs.create({
+    defaultLayout: 'main',
     helpers: {
-      json: function(context) {
+      json: function (context) {
         return JSON.stringify(context);
+      },
+      eq: function (a, b) {
+        return a === b;
       }
     }
   });
+app.engine('handlebars', handlebars.engine);
 
 //Routes
 //index.handlebars
@@ -227,9 +229,23 @@ app.post('/saveActivityType', async(req,res) => {
 
 //Save Activity
  app.post('/saveActivity', async(req,res) => {
-    //console.log(req.body);
     try{
-        const newActivity = new Activity(req.body);
+        if (!req.session.user) {
+            return res.status(400).send('User not logged in');
+        }
+        //const newActivity = new Activity(req.body);
+        const newActivity = new Activity({
+            activityName: req.body.activityName,
+            activityDescription: req.body.activityDescription,
+            ActivityPlannedDate: req.body.ActivityPlannedDate,
+            ActivityStartTime: req.body.ActivityStartTime,
+            ActivityEndTime: req.body.ActivityEndTime,
+            activityStatus: "Pending",  // You can change this if needed
+            activityCatergory: req.body.activityCatergory,
+            activityType: req.body.activityType,
+            activityPriority: req.body.activityPriority,
+            userId: req.session.user._id,  // Using the session's userId
+          });
         await newActivity.save();
         //res.send('Added a new Activity!!');
         res.redirect('activity');
@@ -250,12 +266,13 @@ app.get('/activity', async (req, res) => {
             const date = new Date(activity.ActivityPlannedDate);
             return {
                 ...activity,
-                ActivityPlannedDateFormatted: date.toDateString() // returns "Tue Oct 10 2000"
+                ActivityPlannedDateFormatted: date.toDateString() 
             };
         });
         res.render('activity', {
             title: 'Activity List',
-            activities: formattedActivities
+            activities: formattedActivities,
+            user: req.session.user
         });
     } catch (err) {
         console.error(err);
@@ -274,15 +291,15 @@ app.post('/deleteActivity/:id', async (req, res) => {
     }
 });
 
-// GET route to show the update form
+// updateActivity.handlebars - Fill the form with selected Avtivity data
 app.get('/updateActivity/:id', async (req, res) => {
     try {
         const activity = await Activity.findById(req.params.id).lean();
         if (!activity) return res.status(404).send('Activity not found');
 
-        // Format date if needed
+        // Format the date
         const date = new Date(activity.ActivityPlannedDate);
-        activity.ActivityPlannedDateFormatted = date.toISOString().split('T')[0]; // yyyy-mm-dd for input type="date"
+        activity.ActivityPlannedDateFormatted = date.toISOString().split('T')[0];
 
         res.render('updateActivity', {
             title: 'Update Activity',
@@ -294,7 +311,7 @@ app.get('/updateActivity/:id', async (req, res) => {
     }
 });
 
-// POST route to handle update
+// updateActivity.handlebars - Update Avtivity
 app.post('/updateActivity/:id', async (req, res) => {
     try {
         await Activity.findByIdAndUpdate(req.params.id, {
@@ -315,6 +332,158 @@ app.post('/updateActivity/:id', async (req, res) => {
     }
 });
 
+//Loading data to dashboard table according to the filters
+app.get('/activityDashboard', async (req, res) => {
+    try {
+      // Get filters from query string
+      const { status, date } = req.query;
+  
+      // Build dynamic query object
+      const query = {};
+      if (status && status !== 'All') {
+        query.activityStatus = status;
+      }
+      if (date) {
+        const selectedDate = new Date(date);
+        selectedDate.setUTCHours(0, 0, 0, 0);
+        const nextDate = new Date(selectedDate);
+        nextDate.setDate(nextDate.getDate() + 1);
+        query.ActivityPlannedDate = {
+          $gte: selectedDate,
+          $lt: nextDate
+        };
+      }
+  
+      // Fetch filtered data
+      const activities = await Activity.find(query).lean();
+  
+      // Format date for display
+      const formattedActivities = activities.map(activity => ({
+        ...activity,
+        ActivityPlannedDateFormatted: new Date(activity.ActivityPlannedDate).toDateString()
+      }));
+  
+      // Status count + percentage
+      const possibleStatuses = ['Pending', 'InProgress', 'Completed', 'Cancelled', 'Postponed', 'Abandoned'];
+      const statusCounts = {};
+      possibleStatuses.forEach(status => statusCounts[status] = 0);
+  
+      activities.forEach(activity => {
+        const status = activity.activityStatus?.trim();
+        if (status && statusCounts.hasOwnProperty(status)) {
+          statusCounts[status]++;
+        }
+      });
+  
+      const totalActivities = activities.length;
+      const statusPercentages = {};
+      for (const status in statusCounts) {
+        statusPercentages[status] = totalActivities > 0
+          ? Math.round((statusCounts[status] / totalActivities) * 100)
+          : 0;
+      }
+  
+      // Send everything to the view
+      res.render('activityDashboard', {
+        title: 'Activity Dashboard',
+        activities: formattedActivities,
+        statusCounts,
+        statusPercentages,
+        possibleStatuses,
+        statusCountsJSON: JSON.stringify(statusCounts),
+        statusPercentagesJSON: JSON.stringify(statusPercentages),
+        filters: {
+            status: status || 'All',
+            date: date || ''
+          }
+      });
+  
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Failed to load dashboard.');
+    }
+  });
+  
+//Update activity status
+app.post('/updateActivityStatus/:id', async (req, res) => {
+    try {
+        await Activity.findByIdAndUpdate(req.params.id, {
+            activityStatus: req.body.status
+        });
+        res.redirect('/activityDashboard');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Failed to update activity status.');
+    }
+});
+
+//Send email for expired activity
+ // cron.schedule('0 0 * * *', async () => { //job is running everyday at midnight
+    cron.schedule('*/1 * * * *', async () => { //job is running every 1 minute. added for the testing purpose
+    console.log('Running daily cron job to check expired activities...');
+    const now = new Date();
+  
+    try {
+        // Find activities with planned date earlier than the current date and email not sent
+      const expiredActivities = await Activity.find({
+        ActivityPlannedDate: { $lt: now },
+        emailSent: false,
+      });
+  
+      for (const activity of expiredActivities) {
+        if (!activity.userId) 
+        {
+            console.log(`❌ No userId found for activity ${activity._id}`);
+            continue; // Skip this activity if no userId is found
+        }
+
+        // Fetch the user details from the User model based on userId
+        const user = await UserRegistration.findById(activity.userId);
+
+        if (!user || !user.email) 
+        {
+            console.log(`❌ No email found for user ${activity.userId}`);
+            continue; // Skip if the user does not have an email
+        }
+
+      const userEmail = user.email; // Assuming the User model has an 'email' field
+
+        const emailBody = `
+          <h2>Hello !</h2>
+          <p>This is a reminder that the following activity has expired:</p>
+          <ul>
+            <li><strong>Title:</strong> ${activity.activityName}</li>
+            <li><strong>Description:</strong> ${activity.activityDescription}</li>
+            <li><strong>Planned Date:</strong> ${new Date(activity.ActivityPlannedDate).toDateString()}</li>
+            <li><strong>Start Time:</strong> ${activity.ActivityStartTime}</li>
+            <li><strong>End Time:</strong> ${activity.ActivityEndTime}</li>
+            <li><strong>Status:</strong> ${activity.activityStatus}</li>
+          </ul>
+          <p>Please update your dashboard if this was completed or postponed.</p>
+          <p>Regards,<br>Your Daily Routing Tracker Team!!!</p>
+        `;        
+            try {
+                // Send the email
+                await sendEmail(userEmail, 'Your Activity Has Expired', emailBody);
+                console.log(`✅ Email sent for activity: ${activity._id}`);
+
+                // Mark the activity as having an email sent
+                activity.emailSent = true;
+
+                // Ensure the `activity` is saved after updating the emailSent flag
+                await activity.save();
+                console.log(`✅ Activity ${activity._id} updated with emailSent: true`);
+            }             
+            catch (err) 
+            {
+                console.error(`❌ Error sending email for activity ${activity._id}:`, err);
+            }
+        }
+            console.log(`✅ Emails sent for ${expiredActivities.length} expired activities.`);
+            } catch (err) {
+                console.error('❌ Error checking expired activities:', err);
+            }
+});
 
 //Registration/Login/Logout Related codes
 //Save users
@@ -324,7 +493,7 @@ app.post('/users', async(req,res) => {
         const newUserRegistration = new UserRegistration(req.body)
         await newUserRegistration.save();
         //res.send('user registered!!');
-        res.render('login')
+        res.redirect('login')
     }
     catch(err)
     {
@@ -372,122 +541,4 @@ app.get('/logout', (req, res) => {
         res.clearCookie('connect.sid');  // Optional: to clear the session cookie
         res.redirect('/');  // Redirect to homepage after logout
     });
-});
-
-
-//Render activity Dashboard
-/* app.get('/activityDashboard', async (req, res) => {
-    try {
-      const activities = await Activity.find().lean();
-  
-      const formattedActivities = activities.map(activity => {
-        const date = new Date(activity.ActivityPlannedDate);
-        return {
-          ...activity,
-          ActivityPlannedDateFormatted: date.toDateString()
-        };
-      });
-  
-      // Count activity statuses
-      const statusCounts = {
-        pending: 0,
-        inProgress: 0,
-        completed: 0,
-        abandoned: 0,
-        postponed: 0
-      };
-  
-      activities.forEach(activity => {
-        const status = activity.activityStatus?.toLowerCase().replace(/\s/g, '');
-        if (statusCounts.hasOwnProperty(status)) {
-          statusCounts[status]++;
-        }
-      });
-  
-      const totalActivities = activities.length;
-      const statusPercentages = {};
-      for (const key in statusCounts) {
-        statusPercentages[key] = totalActivities > 0
-          ? Math.round((statusCounts[key] / totalActivities) * 100)
-          : 0;
-      }
-  
-      res.render('activityDashboard', {
-        title: 'Activity Dashboard',
-        activities: formattedActivities,
-        statusCounts,
-        statusPercentages
-      });
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Failed to load dashboard.');
-    }
-  }); */
-
-  app.get('/activityDashboard', async (req, res) => {
-    try {
-      const activities = await Activity.find().lean();
-  
-      const formattedActivities = activities.map(activity => {
-        const date = new Date(activity.ActivityPlannedDate);
-        return {
-          ...activity,
-          ActivityPlannedDateFormatted: date.toDateString()
-        };
-      });
-  
-      // Updated possibleStatuses to match DB format (no spaces)
-      const possibleStatuses = ['Pending', 'InProgress', 'Completed', 'Cancelled', 'Postponed', 'Abandoned'];
-  
-      const statusCounts = {};
-      possibleStatuses.forEach(status => {
-        statusCounts[status] = 0;
-      });
-  
-      activities.forEach(activity => {
-        const status = activity.activityStatus?.trim();
-        if (status && statusCounts.hasOwnProperty(status)) {
-          statusCounts[status]++;
-        }
-      });
-  
-      const totalActivities = activities.length;
-      const statusPercentages = {};
-      for (const status in statusCounts) {
-        statusPercentages[status] = totalActivities > 0
-          ? Math.round((statusCounts[status] / totalActivities) * 100)
-          : 0;
-      }
-  
-      res.render('activityDashboard', {
-        title: 'Activity Dashboard',
-        activities: formattedActivities,
-        statusCounts,
-        statusPercentages,
-        possibleStatuses,
-        statusCountsJSON: JSON.stringify(statusCounts),
-        statusPercentagesJSON: JSON.stringify(statusPercentages)
-      });
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Failed to load dashboard.');
-    }
-  });
-  
-  
-  
-  
-  
-
-//Update activity status
-app.post('/updateActivityStatus/:id', async (req, res) => {
-    try {
-        await Activity.findByIdAndUpdate(req.params.id, {
-            activityStatus: req.body.status
-        });
-        res.redirect('/activityDashboard');
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Failed to update activity status.');
-    }
 });
