@@ -1,21 +1,59 @@
-<div class="container-fluid min-h-screen bg-gray-50 p-4">
-  <div class="row">
-    <!-- Sidebar -->
-    <div class="col-sm-3">
-      <nav class="nav flex-column bg-green-600 text-white rounded-lg p-3 h-full">
-        <div class="mb-4">
-          <a href="#"><img src="/images/Logo DRT.jpg" alt="Logo" class="w-full mb-3"></a>
-        </div>
-        <a class="py-2 text-center text-xl hover:bg-green-500 rounded" href="/home">Home</a>
-        <a class="py-2 text-center text-xl hover:bg-green-500 rounded" href="/activityTracker">Activity Tracker</a>
-        <a class="py-2 text-center text-xl hover:bg-green-500 rounded" href="/addExpense">Money Tracker</a>
-        <a class="py-2 text-center text-xl hover:bg-green-500 rounded" href="#">Dashboard</a>
-        <a class="py-2 text-center text-xl hover:bg-green-500 rounded" href="#">Profile</a>
-      </nav>
+<div class="container-activityNew">
+  <!-- Sidebar -->
+  <nav id="sidebar" class="">
+    <div class="sidebar-header p-3">
+      <img src="/images/Logo DRT.jpg" alt="Logo" class="logo-img mb-2">
+      <h4>Daily Routing Tracker</h4>
     </div>
+    <ul class="nav flex-column">
 
-    <!-- Main Content -->
-    <div class="col-sm-9">
+      <li class="nav-item">
+        <a class="nav-link" href="http://localhost:3000/home">Home</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#activityMenu" role="button">
+          Activity Tracker
+        </a>
+        <ul class="collapse list-unstyled ps-3" id="activityMenu">
+          <li><a class="nav-link" href="http://localhost:3000/activity">Activity Log</a></li>
+          <li><a class="nav-link" href="http://localhost:3000/updateActivity">Activity Update</a></li>
+        </ul>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#expenseMenu" role="button">
+          Expense Tracker
+        </a>
+        <ul class="collapse list-unstyled ps-3" id="expenseMenu">
+          <li><a class="nav-link" href="http://localhost:3000/addExpense">Expense Log</a></li>
+          <li><a class="nav-link" href="http://localhost:3000/viewExpense">Expense Update</a></li>
+          
+        </ul>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#dashboardMenu" role="button">
+          Dashboard
+        </a>
+        <ul class="collapse list-unstyled ps-3" id="dashboardMenu">
+          <li><a class="nav-link" href="http://localhost:3000/activityDashboard">Activity Dashboard</a></li>
+          <li><a class="nav-link" href="http://localhost:3000/expenseDashboard">Expense Dashboard</a></li>
+        </ul>
+      </li>
+
+      <li class="nav-item mt-3">
+        <span class="nav-link">Hello!! {{user.userName}}</span>
+        <a href="/logout" class="btn btn-sm btn-outline-light mt-2">Logout</a>
+      </li>
+
+    </ul>
+  </nav>
+  
+
+  <!-- Main Content -->
+  <main class="flex-grow-1 p-8">
+    <div class="">
       <div class="bg-white rounded-2xl shadow-xl p-6">
         <h1 class="text-3xl font-bold mb-6 text-gray-800">All Expenses</h1>
 
@@ -44,9 +82,9 @@
                 <td class="border px-4 py-2">{{this.status}}</td>
                 <td class="border px-4 py-2">{{this.notes}}</td>
                 <td class="border px-4 py-2 space-x-2">
-                  <a href="/updateExpense/{{this._id}}" class="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600">Edit</a>
+                  <a href="/updateExpense/{{this._id}}" class="bg-blue-500 text-white  px-3  rounded hover:bg-blue-600">Edit</a>
                   <form action="/deleteExpense/{{this._id}}" method="POST" class="inline-block">
-                    <button type="submit" class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600">x</button>
+                    <button type="submit" class="bg-red-500 text-white  px-3 rounded hover:bg-red-600">Delete</button>
                   </form>
                 </td>
               </tr>

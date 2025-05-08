@@ -1,0 +1,164 @@
+<div class="container-activityNew">
+  <!-- Sidebar -->
+  <nav id="sidebar" class="">
+    <div class="sidebar-header p-3">
+      <img src="/images/Logo DRT.jpg" alt="Logo" class="logo-img mb-2">
+      <h4>Daily Routing Tracker</h4>
+    </div>
+    <ul class="nav flex-column">
+
+      <li class="nav-item">
+        <a class="nav-link" href="http://localhost:3000/home">Home</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#activityMenu" role="button">
+          Activity Tracker
+        </a>
+        <ul class="collapse list-unstyled ps-3" id="activityMenu">
+          <li><a class="nav-link" href="http://localhost:3000/activity">Activity Log</a></li>
+          <li><a class="nav-link" href="http://localhost:3000/updateActivity">Activity Update</a></li>
+        </ul>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#expenseMenu" role="button">
+          Expense Tracker
+        </a>
+        <ul class="collapse list-unstyled ps-3" id="expenseMenu">
+          <li><a class="nav-link" href="http://localhost:3000/addExpense">Expense Log</a></li>
+          <li><a class="nav-link" href="http://localhost:3000/viewExpense">Expense Update</a></li>
+          
+        </ul>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#dashboardMenu" role="button">
+          Dashboard
+        </a>
+        <ul class="collapse list-unstyled ps-3" id="dashboardMenu">
+          <li><a class="nav-link" href="http://localhost:3000/activityDashboard">Activity Dashboard</a></li>
+          <li><a class="nav-link" href="http://localhost:3000/expenseDashboard">Expense Dashboard</a></li>
+        </ul>
+      </li>
+
+      <li class="nav-item mt-3">
+        <span class="nav-link">Hello!! {{user.userName}}</span>
+        <a href="/logout" class="btn btn-sm btn-outline-light mt-2">Logout</a>
+      </li>
+
+    </ul>
+  </nav>
+
+  
+
+  <!-- Main Content -->
+  <main class="flex-grow-1 p-4">
+  <div class="bg-white rounded-2xl shadow-xl p-6 max-w-6xl w-full">
+    <h1 class="mb-4 fw-bold" style="font-size: 2rem;">Expense Dashboard</h1>
+    <!-- Charts -->
+    <div class="row">
+      <div class="col-md-4">
+        <canvas id="statusPieChart" ></canvas>
+      </div>
+      <div class="col-md-2">
+        
+      </div>
+      <div class="col-md-6">
+        <canvas id="statusBarChart" ></canvas>
+      </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="mb-3">
+      <label for="expenseStatus" class="form-label">Filter by Status:</label>
+      <select id="expenseStatus" class="form-select" style="max-width: 300px;">
+        <option value="All">All</option>
+        <option value="Planned">Planned</option>
+        <option value="Due">Due</option>
+        <option value="Paid">Paid</option>
+        <option value="Partially paid">Partially paid</option>
+        <option value="Overdue">Overdue</option>
+        <option value="Cancelled">Cancelled</option>
+      </select>
+    </div>
+
+    <!-- Expense Table -->
+    <div class="table-responsive mb-4">
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Due Date</th>
+            <th>Paid Date</th>
+            <th>Status</th>
+            <th>Payment Method</th>
+          </tr>
+        </thead>
+        <tbody id="expenseTable">
+          {{#each expenses}}
+          <tr data-status="{{this.status}}">
+            <td>${{this.amount}}</td>
+            <td>{{this.category}}</td>
+            <td>{{this.dueDateFormatted}}</td>
+            <td>{{this.paidDateFormatted}}</td>
+            <td class="status">{{this.status}}</td>
+            <td>{{this.paymentMethod}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+
+    </div>
+  </main>
+
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Filter Logic
+  const statusFilter = document.getElementById('expenseStatus');
+  const rows = document.querySelectorAll('#expenseTable tr');
+
+  statusFilter?.addEventListener('change', () => {
+    const selected = statusFilter.value;
+    rows.forEach(row => {
+      row.style.display = (selected === 'All' || row.dataset.status === selected) ? '' : 'none';
+    });
+  });
+
+  // Injected Data from Server
+  const expenseStatusCounts = {{{expenseStatusCountsJSON}}};
+  const expenseStatusPercentages = {{{expenseStatusPercentagesJSON}}};
+
+  // Pie Chart
+  const ctxPie = document.getElementById('statusPieChart').getContext('2d');
+  new Chart(ctxPie, {
+    type: 'pie',
+    data: {
+      labels: Object.keys(expenseStatusCounts),
+      datasets: [{
+        label: 'Expense Status',
+        data: Object.values(expenseStatusCounts),
+        backgroundColor: ['gray', 'green', 'red', 'blue', 'red', 'black']
+      }]
+    }
+  });
+
+  // Bar Chart
+  const ctxBar = document.getElementById('statusBarChart').getContext('2d');
+  new Chart(ctxBar, {
+    type: 'bar',
+    data: {
+      labels: Object.keys(expenseStatusPercentages),
+      datasets: [{
+        label: '% of Total Expenses',
+        data: Object.values(expenseStatusPercentages),
+        backgroundColor: ['gray', 'green', 'red', 'blue', 'red', 'black']
+      }]
+    }
+  });
+</script>
