@@ -7,6 +7,8 @@ const ActivityCategories = require('./models/ActivityCategories');
 const UserRegistration = require('./models/UserRegistration');
 const Activity = require('./models/Activity');
 const ActivityTypes = require('./models/ActivityTypes');
+const sendEmail = require('./utils/mailer');
+const cron = require('node-cron');
 //added from Shammi's branch
 const viewExpense = require('./models/expenseView');
 const Expense = require('./models/expense');
@@ -227,9 +229,23 @@ app.post('/saveActivityType', async(req,res) => {
 
 //Save Activity
  app.post('/saveActivity', async(req,res) => {
-    //console.log(req.body);
     try{
-        const newActivity = new Activity(req.body);
+        if (!req.session.user) {
+            return res.status(400).send('User not logged in');
+        }
+        //const newActivity = new Activity(req.body);
+        const newActivity = new Activity({
+            activityName: req.body.activityName,
+            activityDescription: req.body.activityDescription,
+            ActivityPlannedDate: req.body.ActivityPlannedDate,
+            ActivityStartTime: req.body.ActivityStartTime,
+            ActivityEndTime: req.body.ActivityEndTime,
+            activityStatus: "Pending",  // You can change this if needed
+            activityCatergory: req.body.activityCatergory,
+            activityType: req.body.activityType,
+            activityPriority: req.body.activityPriority,
+            userId: req.session.user._id,  // Using the session's userId
+          });
         await newActivity.save();
         //res.send('Added a new Activity!!');
         res.redirect('activity');
@@ -255,7 +271,8 @@ app.get('/activity', async (req, res) => {
         });
         res.render('activity', {
             title: 'Activity List',
-            activities: formattedActivities
+            activities: formattedActivities,
+            user: req.session.user
         });
     } catch (err) {
         console.error(err);
@@ -398,6 +415,74 @@ app.post('/updateActivityStatus/:id', async (req, res) => {
         console.error(err);
         res.status(500).send('Failed to update activity status.');
     }
+});
+
+//Send email for expired activity
+ // cron.schedule('0 0 * * *', async () => { //job is running everyday at midnight
+    cron.schedule('*/1 * * * *', async () => { //job is running every 1 minute. added for the testing purpose
+    console.log('Running daily cron job to check expired activities...');
+    const now = new Date();
+  
+    try {
+        // Find activities with planned date earlier than the current date and email not sent
+      const expiredActivities = await Activity.find({
+        ActivityPlannedDate: { $lt: now },
+        emailSent: false,
+      });
+  
+      for (const activity of expiredActivities) {
+        if (!activity.userId) 
+        {
+            console.log(`❌ No userId found for activity ${activity._id}`);
+            continue; // Skip this activity if no userId is found
+        }
+
+        // Fetch the user details from the User model based on userId
+        const user = await UserRegistration.findById(activity.userId);
+
+        if (!user || !user.email) 
+        {
+            console.log(`❌ No email found for user ${activity.userId}`);
+            continue; // Skip if the user does not have an email
+        }
+
+      const userEmail = user.email; // Assuming the User model has an 'email' field
+
+        const emailBody = `
+          <h2>Hello !</h2>
+          <p>This is a reminder that the following activity has expired:</p>
+          <ul>
+            <li><strong>Title:</strong> ${activity.activityName}</li>
+            <li><strong>Description:</strong> ${activity.activityDescription}</li>
+            <li><strong>Planned Date:</strong> ${new Date(activity.ActivityPlannedDate).toDateString()}</li>
+            <li><strong>Start Time:</strong> ${activity.ActivityStartTime}</li>
+            <li><strong>End Time:</strong> ${activity.ActivityEndTime}</li>
+            <li><strong>Status:</strong> ${activity.activityStatus}</li>
+          </ul>
+          <p>Please update your dashboard if this was completed or postponed.</p>
+          <p>Regards,<br>Your Daily Routing Tracker Team!!!</p>
+        `;        
+            try {
+                // Send the email
+                await sendEmail(userEmail, 'Your Activity Has Expired', emailBody);
+                console.log(`✅ Email sent for activity: ${activity._id}`);
+
+                // Mark the activity as having an email sent
+                activity.emailSent = true;
+
+                // Ensure the `activity` is saved after updating the emailSent flag
+                await activity.save();
+                console.log(`✅ Activity ${activity._id} updated with emailSent: true`);
+            }             
+            catch (err) 
+            {
+                console.error(`❌ Error sending email for activity ${activity._id}:`, err);
+            }
+        }
+            console.log(`✅ Emails sent for ${expiredActivities.length} expired activities.`);
+            } catch (err) {
+                console.error('❌ Error checking expired activities:', err);
+            }
 });
 
 //Registration/Login/Logout Related codes

@@ -41,6 +41,19 @@ const activitySchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+
+    //taking user Id from the users table
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+        required: true
+      },
+      
+    emailSent: {
+        type: Boolean,
+        default: false  // this is the flag to know whether email is sent or not
     }
+
 });
 module.exports = mongoose.model("Activities", activitySchema); 
