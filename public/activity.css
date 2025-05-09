@@ -17,9 +17,11 @@
   }
   
   .logo-img {
-    width: 75px;
-    height: 75px;
+    width: 130px;
+    height: 130px;
     object-fit: contain;
+    object-position: center;
+    
   }
   
   .nav-link {
@@ -56,12 +58,12 @@
     align-items: center; /* centers child elements like h1/h2 if needed */
   }
   
-  .container-viewActivity h1,
+  /* .container-viewActivity h1,
   .container-viewActivity h2 {
     color: #333;
     margin-bottom: 20px;
     text-align: center;
-  }
+  } */
   
   .table-container {
     max-width: 100%;
@@ -78,7 +80,7 @@
   .activity-table {
     width: 100%;
     /*border-collapse: collapse;*/
-    table-layout: fixed; /* Optional: Helps with consistent column width */
+    table-layout: fixed;
   }
   
   .activity-table th,
