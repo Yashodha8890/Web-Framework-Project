@@ -28,18 +28,18 @@
 }
 
 .home-main {
-    background-color: #d9f6ef;
+    
     min-height: calc(100vh - 100px);
     padding: 40px 60px;
     text-align: center;
 }
 
-.welcome-title {
+/* .welcome-title {
     font-size: 2.5rem;
     font-weight: bold;
     margin-bottom: 20px;
     color: #00695c;
-}
+} */
 
 .intro-text {
     font-size: 1.1rem;
