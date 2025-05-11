@@ -1,117 +1,107 @@
+updateExpense.handlebars
+=========
 
 <div class="container-activityNew">
   <!-- Sidebar -->
-  <nav id="sidebar" class="">
+  <nav id="sidebar" aria-label="Sidebar Navigation">
     <div class="sidebar-header p-3">
-      <img src="/images/Logo DRT.jpg" alt="Logo" class="logo-img mb-2">
+      <img src="/images/Logo DRT.jpg" alt="DRT Logo" class="logo-img mb-2">
       <h4>Daily Routing Tracker</h4>
     </div>
-    <ul class="nav flex-column">
-
-      <li class="nav-item">
-        <a class="nav-link" href="/home">Home</a>
+    <ul class="nav flex-column" role="menu">
+      <li class="nav-item" role="none">
+        <a class="nav-link" role="menuitem" href="/home">Home</a>
       </li>
 
-      <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#activityMenu" role="button">
-          Activity Tracker
-        </a>
-        <ul class="collapse list-unstyled ps-3" id="activityMenu">
-          <li><a class="nav-link" href="/activity">Activity Log</a></li>
-          <li><a class="nav-link" href="/updateActivity">Activity Update</a></li>
+      <li class="nav-item" role="none">
+        <a class="nav-link" role="menuitem" aria-expanded="false" aria-controls="activityMenu" data-bs-toggle="collapse" href="#activityMenu">Activity Tracker</a>
+        <ul class="collapse list-unstyled ps-3" id="activityMenu" role="menu">
+          <li><a class="nav-link" role="menuitem" href="/activity">Activity Log</a></li>
+          <li><a class="nav-link" role="menuitem" href="/updateActivity">Activity Update</a></li>
         </ul>
       </li>
 
-      <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#expenseMenu" role="button">
-          Expense Tracker
-        </a>
-        <ul class="collapse list-unstyled ps-3" id="expenseMenu">
-          <li><a class="nav-link" href="/addExpense">Expense Log</a></li>
-          <li><a class="nav-link" href="/viewExpense">Expense Update</a></li>
-          
+      <li class="nav-item" role="none">
+        <a class="nav-link" role="menuitem" aria-expanded="false" aria-controls="expenseMenu" data-bs-toggle="collapse" href="#expenseMenu">Expense Tracker</a>
+        <ul class="collapse list-unstyled ps-3" id="expenseMenu" role="menu">
+          <li><a class="nav-link" role="menuitem" href="/addExpense">Expense Log</a></li>
+          <li><a class="nav-link" role="menuitem" href="/viewExpense">Expense Update</a></li>
         </ul>
       </li>
 
-      <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#dashboardMenu" role="button">
-          Dashboard
-        </a>
-        <ul class="collapse list-unstyled ps-3" id="dashboardMenu">
-          <li><a class="nav-link" href="/activityDashboard">Activity Dashboard</a></li>
-          <li><a class="nav-link" href="/expenseDashboard">Expense Dashboard</a></li>
+      <li class="nav-item" role="none">
+        <a class="nav-link" role="menuitem" aria-expanded="false" aria-controls="dashboardMenu" data-bs-toggle="collapse" href="#dashboardMenu">Dashboard</a>
+        <ul class="collapse list-unstyled ps-3" id="dashboardMenu" role="menu">
+          <li><a class="nav-link" role="menuitem" href="/activityDashboard">Activity Dashboard</a></li>
+          <li><a class="nav-link" role="menuitem" href="/expenseDashboard">Expense Dashboard</a></li>
         </ul>
       </li>
 
-      <li class="nav-item mt-3">
+      <li class="nav-item mt-3" role="none">
         <span class="nav-link">Hello!! {{user.userName}}</span>
-        <a href="/logout" class="btn btn-sm btn-outline-light mt-2">Logout</a>
+        <a href="/logout" class="btn btn-sm btn-outline-light mt-2" role="button">Logout</a>
       </li>
-
     </ul>
   </nav>
-  
 
   <!-- Main Content -->
-  <main class="flex-grow-1 pt-8 pr-8 pb-8 pl-16">
-  <div class="bg-white rounded-2xl shadow-xl p-6 max-w-2xl w-full">
-    <h1 class="text-2xl font-bold mb-4 text-center">Update Expense</h1>
-    
-    <form action="/updateExpense/{{expense._id}}" method="POST" class="space-y-4">
-      <div>
-        <label class="block mb-1 font-semibold">Amount</label>
-        
-        <input type="number" name="amount" value="{{expense.amount}}" required class="w-full border border-gray-300 p-2 rounded" />
-      </div>
+  <main class="flex-grow-1 pt-8 pr-8 pb-8 pl-16" aria-label="Update Expense Section">
+    <div class="bg-white rounded-2xl shadow-xl p-6 max-w-2xl w-full">
+      <h1 class="text-2xl font-bold mb-4 text-center" id="updateExpenseHeading">Update Expense</h1>
 
-      <div>
-        <label class="block mb-1 font-semibold">Category</label>
-        <input type="text" name="category" value="{{expense.category}}" required class="w-full border border-gray-300 p-2 rounded" />
-      </div>
+      <form action="/updateExpense/{{expense._id}}" method="POST" class="space-y-4" aria-labelledby="updateExpenseHeading">
+        <div>
+          <label for="amount" class="block mb-1 font-semibold">Amount</label>
+          <input id="amount" type="number" name="amount" value="{{expense.amount}}" required class="w-full border border-gray-300 p-2 rounded" />
+        </div>
 
-      <div class="mb-4">
-        <label class="font-medium">Due Date</label>
-        <input type="date" id="dueDate" class="border mt-2 w-full p-2 rounded" value="{{expense.dueDate}}" name="dueDate" required><br>
-      </div>
+        <div>
+          <label for="category" class="block mb-1 font-semibold">Category</label>
+          <input id="category" type="text" name="category" value="{{expense.category}}" required class="w-full border border-gray-300 p-2 rounded" />
+        </div>
 
-      <div class="mb-4">
-        <label class="font-medium">Paid date</label>
-        <input type="date" id="paidDate" class="border mt-2 w-full p-2 rounded" value="{{expense.paidDate}}"name="paidDate" ><br>
-      </div>
+        <div class="mb-4">
+          <label for="dueDate" class="font-medium">Due Date</label>
+          <input type="date" id="dueDate" name="dueDate" class="border mt-2 w-full p-2 rounded" value="{{expense.dueDate}}" required />
+        </div>
 
-      <div class="mb-4">
-        <label class="font-medium">Payment status</label>
-        <select name="status" class="border w-full p-2 mt-2 rounded">
-          <option>Planned</option>
-          <option>Due</option>
-          <option>Paid</option>
-          <option>Partialy paid</option>
-          <option>Overdue</option>
-          <option>Cancelled</option>
-        </select>
-      </div>
+        <div class="mb-4">
+          <label for="paidDate" class="font-medium">Paid Date</label>
+          <input type="date" id="paidDate" name="paidDate" class="border mt-2 w-full p-2 rounded" value="{{expense.paidDate}}" />
+        </div>
 
-      <div class="mb-4">
-        <label class="font-medium">Paid With</label>
-        <select name="paymentMethod" class="border w-full p-2 mt-2 rounded">
-          <option>Cash</option>
-          <option>Credit Card</option>
-          <option>Debit Card</option>
-          <option>Bank Transfer</option>
-          <option>Digital Wallet</option>
-        </select>
-      </div>
+        <div class="mb-4">
+          <label for="status" class="font-medium">Payment Status</label>
+          <select id="status" name="status" class="border w-full p-2 mt-2 rounded">
+            <option value="Planned">Planned</option>
+            <option value="Due">Due</option>
+            <option value="Paid">Paid</option>
+            <option value="Partialy paid">Partialy paid</option>
+            <option value="Overdue">Overdue</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
 
-      <div>
-        <label class="block mb-1 font-semibold">Notes</label>
-        <textarea name="notes" class="w-full border border-gray-300 p-2 rounded">{{expense.notes}}</textarea>
-      </div>   
+        <div class="mb-4">
+          <label for="paymentMethod" class="font-medium">Paid With</label>
+          <select id="paymentMethod" name="paymentMethod" class="border w-full p-2 mt-2 rounded">
+            <option value="Cash">Cash</option>
+            <option value="Credit Card">Credit Card</option>
+            <option value="Debit Card">Debit Card</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+            <option value="Digital Wallet">Digital Wallet</option>
+          </select>
+        </div>
 
-      <div class="text-center">
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Update Expense</button>
-      </div>
-    </form>
-   
-  </div>
-</body>
-</html>
+        <div>
+          <label for="notes" class="block mb-1 font-semibold">Notes</label>
+          <textarea id="notes" name="notes" class="w-full border border-gray-300 p-2 rounded">{{expense.notes}}</textarea>
+        </div>   
+
+        <div class="text-center">
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Update Expense</button>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
