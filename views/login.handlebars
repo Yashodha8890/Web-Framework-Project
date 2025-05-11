@@ -1,18 +1,23 @@
 <body class="login-page">
-  <div class="login-container">
-    <img src="/images/Logo DRT.jpg" alt="Logo">
-    <h2>Login Here</h2>
-    <form action="/login" method="post">
-      <label for="userName">User Name:</label>
-      <input type="text" id="userName" name="userName" required>
+  <div class="login-container" role="main" aria-labelledby="loginTitle">
+    <img src="/images/Logo DRT.jpg" alt="DRT Company Logo" />
 
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required>
+    <h2 id="loginTitle">Login Here</h2>
 
-      <input type="submit" value="Login">
-      <input type="reset" value="Reset">
+    <form action="/login" method="post" aria-describedby="loginInstructions">
+      <p id="loginInstructions">Please enter your credentials to log in. Fields marked with * are required.</p>
+
+      <label for="userName">User Name: <span aria-hidden="true">*</span></label>
+      <input type="text" id="userName" name="userName" required aria-required="true" aria-labelledby="userName">
+
+      <label for="password">Password: <span aria-hidden="true">*</span></label>
+      <input type="password" id="password" name="password" required aria-required="true" aria-labelledby="password">
+
+      <input type="submit" value="Login" aria-label="Submit login form">
+      <input type="reset" value="Reset" aria-label="Reset form fields">
     </form>
 
-    <a href="/" class="back-btn">Back</a>
+    <a href="/" class="back-btn" aria-label="Back to homepage">Back</a>
   </div>
 </body>
+

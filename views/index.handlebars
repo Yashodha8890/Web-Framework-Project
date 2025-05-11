@@ -1,25 +1,26 @@
-<div class="container-fluid vh-100">
-    <div class="row h-100">
-      
-      <!-- Left Panel -->
-      <div class="col-lg-6 d-flex justify-content-center align-items-center p-4">
-        <img src="/images/Landing page.jpg" alt="Illustration" class="img-fluid rounded shadow">
-      </div>
+  <div class="container-fluid vh-100" role="main" aria-label="Landing Page Main Content">
+  <div class="row h-100">
 
-      <!-- Right Panel -->
-      <div class="col-lg-6 d-flex flex-column justify-content-center align-items-center text-center bg-light-custom p-4">
-        <img src="/images/Logo DRT.jpg" alt="Logo" class="rounded-circle logo mb-3">
-        <h1 class="fw-bold text-success">Daily Routing Tracker</h1>
-
-        <div class="d-grid gap-3 mt-4 w-50">
-          <a href="/userRegistration">
-            <button class="btn btn-dark">Sign Up</button>
-          </a>
-          <a href="/login">
-            <button class="btn btn-dark">Sign In</button>
-          </a> 
-        </div>
-      </div>
-
+    <!-- Left Panel -->
+    <div class="col-lg-6 d-flex justify-content-center align-items-center p-4">
+      <img src="/images/Landing page.jpg" alt="Illustration showing the daily routine tracker concept" class="img-fluid rounded shadow" />
     </div>
+
+    <!-- Right Panel -->
+    <div class="col-lg-6 d-flex flex-column justify-content-center align-items-center text-center bg-light-custom p-4">
+      <img src="/images/Logo DRT.jpg" alt="Daily Routine Tracker Logo" class="rounded-circle logo mb-3" />
+
+      <h1 class="fw-bold text-success" id="landingTitle" tabindex="-1">Daily Routing Tracker</h1>
+
+      <div class="d-grid gap-3 mt-4 w-50" role="group" aria-labelledby="landingTitle">
+        <a href="/userRegistration">
+          <button class="btn btn-dark" type="button" aria-label="Sign up for a new account">Sign Up</button>
+        </a>
+        <a href="/login">
+          <button class="btn btn-dark" type="button" aria-label="Sign in to your account">Sign In</button>
+        </a> 
+      </div>
+    </div>
+
   </div>
+</div>
