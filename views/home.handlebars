@@ -1,16 +1,65 @@
+<div class="d-flex">
+  <!-- Sidebar -->
+  <nav id="sidebar" class="">
+    <div class="sidebar-header p-3">
+      <img src="/images/Logo DRT.jpg" alt="Logo" class="logo-img mb-2">
+      <h4>Daily Routing Tracker</h4>
+    </div>
+    <ul class="nav flex-column">
 
+      <li class="nav-item">
+        <a class="nav-link" href="/home">Home</a>
+      </li>
 
-    <header class="home-header">
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#activityMenu" role="button">
+          Activity Tracker
+        </a>
+        <ul class="collapse list-unstyled ps-3" id="activityMenu">
+          <li><a class="nav-link" href="/activity">Activity Log</a></li>
+          <li><a class="nav-link" href="/updateActivity">Activity Update</a></li>
+        </ul>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#expenseMenu" role="button">
+          Expense Tracker
+        </a>
+        <ul class="collapse list-unstyled ps-3" id="expenseMenu">
+          <li><a class="nav-link" href="/addExpense">Expense Log</a></li>
+          <li><a class="nav-link" href="/viewExpense">Expense Update</a></li>
+        </ul>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#dashboardMenu" role="button">
+          Dashboard
+        </a>
+        <ul class="collapse list-unstyled ps-3" id="dashboardMenu">
+          <li><a class="nav-link" href="/activityDashboard">Activity Dashboard</a></li>
+          <li><a class="nav-link" href="/dashboard/expense">Expense Dashboard</a></li>
+        </ul>
+      </li>
+
+      <li class="nav-item mt-3">
+        <span class="nav-link">Hello!! {{user.userName}}</span>
+        <a href="/logout" class="btn btn-sm btn-outline-light mt-2">Logout</a>
+      </li>
+
+    </ul>
+  </nav>
+
+   {{!--  <header class="home-header">
         <div class="logo-section">
             <img src="/images/Logo DRT.jpg" alt="Daily Routing Logo" class="logo-img">
            
         </div>
         <div class="logout-section">
-            <label>Hello!! {{user.userName}}</label>
+            <label>You haved logged in as {{user.userName}}</label>
            <!-- <button class="logout-button">Logout</button>-->
             <a href="/logout"><button class="logout-button">Logout</button></a>
         </div>
-    </header>
+    </header> --}}
 
     <main class="home-main">
         <h1>Welcome to Daily Routing Tracker</h1>
@@ -29,7 +78,7 @@ All your progress is visualized in a clean and simple Dashboard, showing weekly 
             <div class="card">
                 <img src="/images/Activity.jpg" alt="Activities" class="card-img">
                 <!--<button class="card-button" href="http://localhost:3000/activityTracker">Track your activities</button>-->
-                <a class="card-button" href="http://localhost:3000/activity">Track your activities</a>
+                <a class="card-button" href="/activity">Track your activities</a>
             </div>
             <div class="card">
                 <img src="/images/finance.jpg" alt="Money" class="card-img">
@@ -37,7 +86,11 @@ All your progress is visualized in a clean and simple Dashboard, showing weekly 
             </div>
             <div class="card">
                 <img src="/images/dashboard.jpg" alt="Dashboard" class="card-img">
-                <button class="card-button">Visit Dashboard</button>
+                <a class="card-button" href="/activityDashBoard">Activity Dashboard</a>
+            </div>
+            <div class="card">
+                <img src="/images/financeDashboard.jpg" alt="Dashboard" class="card-img">
+                <a class="card-button" href="/expenseDashBoard">Expenses Dashboard</a>
             </div>
         </div>
     </main>

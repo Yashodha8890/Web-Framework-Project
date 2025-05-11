@@ -53,10 +53,10 @@ app.use(express.static('public'));
 
 //session
 app.use(session({
-    secret: 'your-secret-key',  // A secret key to sign the session ID cookie
+    secret: 'your-secret-key', 
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }  // Set to true if using HTTPS
+    cookie: { secure: false } 
 }));
 
 // Define the custom helper to convert objects to JSON
@@ -323,7 +323,6 @@ app.post('/saveCatergory', async(req,res) => {
     try{
         const newActivityCategories = new ActivityCategories(req.body);
         await newActivityCategories.save();
-        //res.send('Added an Activity category');
         res.redirect('activity');
     }
     catch(err)
@@ -336,9 +335,12 @@ app.post('/saveCatergory', async(req,res) => {
 //Save activity types
 app.post('/saveActivityType', async(req,res) => {
     try{
+        if (!req.session.user) 
+        {
+        return res.status(400).send('User not logged in');
+        }
         const newActivityTypes = new ActivityTypes(req.body);
         await newActivityTypes.save();
-       // res.send('Added an Activity types');
         res.redirect('activity');
     }
     catch(err)
@@ -351,7 +353,8 @@ app.post('/saveActivityType', async(req,res) => {
 //Save Activity
  app.post('/saveActivity', async(req,res) => {
     try{
-        if (!req.session.user) {
+        if (!req.session.user) 
+        {
             return res.status(400).send('User not logged in');
         }
         //const newActivity = new Activity(req.body);
@@ -361,14 +364,13 @@ app.post('/saveActivityType', async(req,res) => {
             ActivityPlannedDate: req.body.ActivityPlannedDate,
             ActivityStartTime: req.body.ActivityStartTime,
             ActivityEndTime: req.body.ActivityEndTime,
-            activityStatus: "Pending",  // You can change this if needed
+            activityStatus: "Pending",
             activityCatergory: req.body.activityCatergory,
             activityType: req.body.activityType,
             activityPriority: req.body.activityPriority,
-            userId: req.session.user._id,  // Using the session's userId
+            userId: req.session.user._id,
           });
         await newActivity.save();
-        //res.send('Added a new Activity!!');
         res.redirect('activity');
     }
     catch(err)
@@ -404,6 +406,10 @@ app.get('/activity', async (req, res) => {
 //Delete an activity
 app.post('/deleteActivity/:id', async (req, res) => {
     try {
+        if (!req.session.user) 
+        {
+            return res.status(400).send('User not logged in');
+        }
         await Activity.findByIdAndDelete(req.params.id);
         res.redirect('/activity');
     } catch (err) {
@@ -415,6 +421,10 @@ app.post('/deleteActivity/:id', async (req, res) => {
 // updateActivity.handlebars - Fill the form with selected Avtivity data
 app.get('/updateActivity/:id', async (req, res) => {
     try {
+        if (!req.session.user) 
+        {
+            return res.status(400).send('User not logged in');
+        }
         const activity = await Activity.findById(req.params.id).lean();
         if (!activity) return res.status(404).send('Activity not found');
 
@@ -424,7 +434,8 @@ app.get('/updateActivity/:id', async (req, res) => {
 
         res.render('updateActivity', {
             title: 'Update Activity',
-            activity
+            activity,
+            user: req.session.user
         });
     } catch (err) {
         console.error(err);
@@ -435,6 +446,10 @@ app.get('/updateActivity/:id', async (req, res) => {
 // updateActivity.handlebars - Update Avtivity
 app.post('/updateActivity/:id', async (req, res) => {
     try {
+        if (!req.session.user) 
+        {
+            return res.status(400).send('User not logged in');
+        }
         await Activity.findByIdAndUpdate(req.params.id, {
             activityName: req.body.activityName,
             activityDescription: req.body.activityDescription,
@@ -456,15 +471,15 @@ app.post('/updateActivity/:id', async (req, res) => {
 //Loading data to dashboard table according to the filters
 app.get('/activityDashboard', async (req, res) => {
     try {
-      // Get filters from query string
       const { status, date } = req.query;
   
-      // Build dynamic query object
       const query = {};
-      if (status && status !== 'All') {
+      if (status && status !== 'All') 
+      {
         query.activityStatus = status;
       }
-      if (date) {
+      if (date) 
+      {
         const selectedDate = new Date(date);
         selectedDate.setUTCHours(0, 0, 0, 0);
         const nextDate = new Date(selectedDate);
@@ -484,21 +499,23 @@ app.get('/activityDashboard', async (req, res) => {
         ActivityPlannedDateFormatted: new Date(activity.ActivityPlannedDate).toDateString()
       }));
   
-      // Status count + percentage
       const possibleStatuses = ['Pending', 'InProgress', 'Completed', 'Cancelled', 'Postponed', 'Abandoned'];
       const statusCounts = {};
       possibleStatuses.forEach(status => statusCounts[status] = 0);
   
-      activities.forEach(activity => {
+      activities.forEach(activity => 
+      {
         const status = activity.activityStatus?.trim();
-        if (status && statusCounts.hasOwnProperty(status)) {
+        if (status && statusCounts.hasOwnProperty(status)) 
+        {
           statusCounts[status]++;
         }
       });
   
       const totalActivities = activities.length;
       const statusPercentages = {};
-      for (const status in statusCounts) {
+      for (const status in statusCounts) 
+      {
         statusPercentages[status] = totalActivities > 0
           ? Math.round((statusCounts[status] / totalActivities) * 100)
           : 0;
@@ -513,13 +530,16 @@ app.get('/activityDashboard', async (req, res) => {
         possibleStatuses,
         statusCountsJSON: JSON.stringify(statusCounts),
         statusPercentagesJSON: JSON.stringify(statusPercentages),
-        filters: {
+        filters: 
+        {
             status: status || 'All',
             date: date || ''
-          }
+        }
       });
   
-    } catch (err) {
+    } 
+    catch (err) 
+    {
       console.error(err);
       res.status(500).send('Failed to load dashboard.');
     }
@@ -528,6 +548,10 @@ app.get('/activityDashboard', async (req, res) => {
 //Update activity status
 app.post('/updateActivityStatus/:id', async (req, res) => {
     try {
+        if (!req.session.user) 
+        {
+            return res.status(400).send('User not logged in');
+        }
         await Activity.findByIdAndUpdate(req.params.id, {
             activityStatus: req.body.status
         });
@@ -540,13 +564,16 @@ app.post('/updateActivityStatus/:id', async (req, res) => {
 
 
 //Send email for expired activity
+
     cron.schedule('0 0 * * *', async () => { //job is running everyday at midnight
     //cron.schedule('*/1 * * * *', async () => { //job is running every 1 minute. added for the testing purpose
     console.log('Running daily cron job to check expired activities...');
     const now = new Date();
+
+
   
     try {
-        // Find activities with planned date earlier than the current date and email not sent
+        // Check activities with planned date is before today's date and emailSent is false from the db
       const expiredActivities = await Activity.find({
         ActivityPlannedDate: { $lt: now },
         emailSent: false,
@@ -555,20 +582,20 @@ app.post('/updateActivityStatus/:id', async (req, res) => {
       for (const activity of expiredActivities) {
         if (!activity.userId) 
         {
-            console.log(`❌ No userId found for activity ${activity._id}`);
+            console.log(`No userId found for activity ${activity._id}`);
             continue; // Skip this activity if no userId is found
         }
 
-        // Fetch the user details from the User model based on userId
+        // Fetch the user details from the UserRegistration model based on userId
         const user = await UserRegistration.findById(activity.userId);
 
         if (!user || !user.email) 
         {
-            console.log(`❌ No email found for user ${activity.userId}`);
+            console.log(`No email found for user ${activity.userId}`);
             continue; // Skip if the user does not have an email
         }
 
-      const userEmail = user.email; // Assuming the User model has an 'email' field
+      const userEmail = user.email;
 
         const emailBody = `
           <h2>Hello !</h2>
@@ -587,23 +614,25 @@ app.post('/updateActivityStatus/:id', async (req, res) => {
             try {
                 // Send the email
                 await sendEmail(userEmail, 'Your Activity Has Expired', emailBody);
-                console.log(`✅ Email sent for activity: ${activity._id}`);
+                console.log(`Email sent for activity: ${activity._id}`);
 
-                // Mark the activity as having an email sent
+                // Mark the activity as email sent
                 activity.emailSent = true;
 
                 // Ensure the `activity` is saved after updating the emailSent flag
                 await activity.save();
-                console.log(`✅ Activity ${activity._id} updated with emailSent: true`);
+                console.log(`Activity ${activity._id} updated with emailSent: true`);
             }             
             catch (err) 
             {
-                console.error(`❌ Error sending email for activity ${activity._id}:`, err);
+                console.error(`Error sending email for activity ${activity._id}:`, err);
             }
         }
-            console.log(`✅ Emails sent for ${expiredActivities.length} expired activities.`);
-            } catch (err) {
-                console.error('❌ Error checking expired activities:', err);
+            console.log(`Emails sent for ${expiredActivities.length} expired activities.`);
+            } 
+            catch (err) 
+            {
+                console.error('Error checking expired activities:', err);
             }
 });
 
@@ -614,7 +643,6 @@ app.post('/users', async(req,res) => {
     {
         const newUserRegistration = new UserRegistration(req.body)
         await newUserRegistration.save();
-        //res.send('user registered!!');
         res.redirect('login')
     }
     catch(err)
@@ -640,15 +668,18 @@ app.post('/login', async (req, res) => {
         
         if (user && user.password === password) {
             req.session.user = user;  // Save user data to session
-            res.redirect('/home');  // Redirect to homepage
+            res.redirect('/home');
         } else {
             res.render('login', { 
-                error: 'Invalid credentials' // Show an error message
+                error: 'Invalid credentials'
             });
         }
-    } catch (error) {
+    } 
+    catch (error) 
+    {
         console.error(error);
-        res.render('login', { 
+        res.render('login', 
+        { 
             error: 'Something went wrong' 
         });
     }
@@ -660,7 +691,7 @@ app.get('/logout', (req, res) => {
         if (err) {
             return res.redirect('/');
         }
-        res.clearCookie('connect.sid');  // Optional: to clear the session cookie
-        res.redirect('/');  // Redirect to homepage after logout
+        res.clearCookie('connect.sid');
+        res.redirect('/'); 
     });
 });

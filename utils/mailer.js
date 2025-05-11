@@ -1,12 +1,12 @@
 // utils/mailer.js
 const nodemailer = require('nodemailer');
 
-// Create a transporter for Gmail (you can change this to your email provider's SMTP settings)
+// Create a transporter for Gmail 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',        // Gmail SMTP service (change it if you are using a different email service)
+  service: 'gmail',        
   auth: {
-    user: 'yasho.aapy@gmail.com',  // Your Gmail address
-    pass: 'xhhp xath taie msms',     // Your Gmail app password (if using 2FA, create an app password)
+    user: 'yasho.aapy@gmail.com',  
+    pass: 'xhhp xath taie msms',     
   },
   tls: {
     rejectUnauthorized: false,     // This allows bypassing SSL certificate validation errors
@@ -19,18 +19,18 @@ const sendEmail = (to, subject, text) => {
     from: 'dailyroutingtracker@gmail.com',// Sender's email address        
     to,                              // Recipient email address
     subject,                         // Email subject
-    html: text,                      // HTML content of the email (formatted message)
+    html: text,                      // HTML content of the email
   };
 
   // Send the email using Nodemailer
   return transporter.sendMail(mailOptions)
     .then(info => {
-      console.log('Email sent: ' + info.response);  // Log success
+      console.log('Email sent: ' + info.response); 
     })
     .catch(err => {
-      console.log('Error sending email: ', err);  // Log any errors
+      console.log('Error sending email: ', err);
     });
 };
 
-module.exports = sendEmail;  // Export the sendEmail function for use in other parts of your app
+module.exports = sendEmail;  
 
