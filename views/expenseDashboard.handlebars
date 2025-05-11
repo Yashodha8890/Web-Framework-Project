@@ -1,125 +1,112 @@
 <div class="container-activityNew">
   <!-- Sidebar -->
-  <nav id="sidebar" class="">
+  <nav id="sidebar" aria-label="Sidebar Navigation">
     <div class="sidebar-header p-3">
-      <img src="/images/Logo DRT.jpg" alt="Logo" class="logo-img mb-2">
+      <img src="/images/Logo DRT.jpg" alt="DRT Logo" class="logo-img mb-2">
       <h4>Daily Routing Tracker</h4>
     </div>
-    <ul class="nav flex-column">
-
-      <li class="nav-item">
-        <a class="nav-link" href="/home">Home</a>
+    <ul class="nav flex-column" role="menu">
+      <li class="nav-item" role="none">
+        <a class="nav-link" role="menuitem" href="/home">Home</a>
       </li>
 
-      <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#activityMenu" role="button">
-          Activity Tracker
-        </a>
-        <ul class="collapse list-unstyled ps-3" id="activityMenu">
-          <li><a class="nav-link" href="/activity">Activity Log</a></li>
-          <li><a class="nav-link" href="/updateActivity">Activity Update</a></li>
+      <li class="nav-item" role="none">
+        <a class="nav-link" role="menuitem" aria-expanded="false" aria-controls="activityMenu" data-bs-toggle="collapse" href="#activityMenu">Activity Tracker</a>
+        <ul class="collapse list-unstyled ps-3" id="activityMenu" role="menu">
+          <li><a class="nav-link" role="menuitem" href="/activity">Activity Log</a></li>
+          <li><a class="nav-link" role="menuitem" href="/updateActivity">Activity Update</a></li>
         </ul>
       </li>
 
-      <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#expenseMenu" role="button">
-          Expense Tracker
-        </a>
-        <ul class="collapse list-unstyled ps-3" id="expenseMenu">
-          <li><a class="nav-link" href="/addExpense">Expense Log</a></li>
-          <li><a class="nav-link" href="/viewExpense">Expense Update</a></li>
-          
+      <li class="nav-item" role="none">
+        <a class="nav-link" role="menuitem" aria-expanded="false" aria-controls="expenseMenu" data-bs-toggle="collapse" href="#expenseMenu">Expense Tracker</a>
+        <ul class="collapse list-unstyled ps-3" id="expenseMenu" role="menu">
+          <li><a class="nav-link" role="menuitem" href="/addExpense">Expense Log</a></li>
+          <li><a class="nav-link" role="menuitem" href="/viewExpense">Expense Update</a></li>
         </ul>
       </li>
 
-      <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#dashboardMenu" role="button">
-          Dashboard
-        </a>
-        <ul class="collapse list-unstyled ps-3" id="dashboardMenu">
-          <li><a class="nav-link" href="/activityDashboard">Activity Dashboard</a></li>
-          <li><a class="nav-link" href="/expenseDashboard">Expense Dashboard</a></li>
+      <li class="nav-item" role="none">
+        <a class="nav-link" role="menuitem" aria-expanded="false" aria-controls="dashboardMenu" data-bs-toggle="collapse" href="#dashboardMenu">Dashboard</a>
+        <ul class="collapse list-unstyled ps-3" id="dashboardMenu" role="menu">
+          <li><a class="nav-link" role="menuitem" href="/activityDashboard">Activity Dashboard</a></li>
+          <li><a class="nav-link" role="menuitem" href="/expenseDashboard">Expense Dashboard</a></li>
         </ul>
       </li>
 
-      <li class="nav-item mt-3">
+      <li class="nav-item mt-3" role="none">
         <span class="nav-link">Hello!! {{user.userName}}</span>
-        <a href="/logout" class="btn btn-sm btn-outline-light mt-2">Logout</a>
+        <a href="/logout" class="btn btn-sm btn-outline-light mt-2" role="button">Logout</a>
       </li>
-
     </ul>
   </nav>
 
-  
-
   <!-- Main Content -->
-  <main class="flex-grow-1 p-4">
-  <div class="bg-white rounded-2xl shadow-xl p-6 max-w-6xl w-full">
-    <h1 class="mb-4 fw-bold" style="font-size: 2rem;">Expense Dashboard</h1>
-    <!-- Charts -->
-    <div class="row">
-      <div class="col-md-4">
-        <canvas id="statusPieChart" ></canvas>
+  <main class="flex-grow-1 p-4" aria-labelledby="dashboardHeading">
+    <div class="bg-white rounded-2xl shadow-xl p-6 max-w-6xl w-full">
+      <h1 class="mb-4 fw-bold text-center" style="font-size: 2rem;" id="dashboardHeading">Expense Dashboard</h1>
+      
+      <!-- Charts -->
+      <div class="row" aria-label="Expense Charts">
+        <div class="col-md-4">
+          <canvas id="statusPieChart" role="img" aria-label="Pie chart showing count of each expense status. If not visible, data is listed below."></canvas>
+        </div>
+        <div class="col-md-2"></div>
+        <div class="col-md-6">
+          <canvas id="statusBarChart" role="img" aria-label="Bar chart showing percentage of each expense status. If not visible, data is listed below."></canvas>
+        </div>
       </div>
-      <div class="col-md-2">
-        
+
+      <!-- Filter -->
+      <div class="mb-3 mt-4">
+        <label for="expenseStatus" class="form-label font-weight-bold">Filter by Status:</label>
+        <select id="expenseStatus" class="form-select" style="max-width: 300px;" aria-describedby="expenseStatusHelp">
+          <option value="All">All</option>
+          <option value="Planned">Planned</option>
+          <option value="Due">Due</option>
+          <option value="Paid">Paid</option>
+          <option value="Partially paid">Partially paid</option>
+          <option value="Overdue">Overdue</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+        <div id="expenseStatusHelp" class="form-text">Choose a status to filter visible expense rows.</div>
       </div>
-      <div class="col-md-6">
-        <canvas id="statusBarChart" ></canvas>
+
+      <!-- Expense Table -->
+      <div class="table-responsive mb-4">
+        <table class="table table-bordered table-hover align-middle" aria-label="Expense Table">
+          <caption class="visually-hidden">Expense list grouped by status, showing amount, category, due date, paid date, and payment method.</caption>
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">Amount</th>
+              <th scope="col">Category</th>
+              <th scope="col">Due Date</th>
+              <th scope="col">Paid Date</th>
+              <th scope="col">Status</th>
+              <th scope="col">Payment Method</th>
+            </tr>
+          </thead>
+          <tbody id="expenseTable">
+            {{#each expenses}}
+            <tr data-status="{{this.status}}">
+              <td>${{this.amount}}</td>
+              <td>{{this.category}}</td>
+              <td>{{this.dueDateFormatted}}</td>
+              <td>{{this.paidDateFormatted}}</td>
+              <td class="status">{{this.status}}</td>
+              <td>{{this.paymentMethod}}</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
       </div>
-    </div>
-
-    <!-- Filter -->
-    <div class="mb-3">
-      <label for="expenseStatus" class="form-label">Filter by Status:</label>
-      <select id="expenseStatus" class="form-select" style="max-width: 300px;">
-        <option value="All">All</option>
-        <option value="Planned">Planned</option>
-        <option value="Due">Due</option>
-        <option value="Paid">Paid</option>
-        <option value="Partially paid">Partially paid</option>
-        <option value="Overdue">Overdue</option>
-        <option value="Cancelled">Cancelled</option>
-      </select>
-    </div>
-
-    <!-- Expense Table -->
-    <div class="table-responsive mb-4">
-      <table class="table table-bordered table-hover align-middle">
-        <thead class="table-dark">
-          <tr>
-            <th>Amount</th>
-            <th>Category</th>
-            <th>Due Date</th>
-            <th>Paid Date</th>
-            <th>Status</th>
-            <th>Payment Method</th>
-          </tr>
-        </thead>
-        <tbody id="expenseTable">
-          {{#each expenses}}
-          <tr data-status="{{this.status}}">
-            <td>${{this.amount}}</td>
-            <td>{{this.category}}</td>
-            <td>{{this.dueDateFormatted}}</td>
-            <td>{{this.paidDateFormatted}}</td>
-            <td class="status">{{this.status}}</td>
-            <td>{{this.paymentMethod}}</td>
-          </tr>
-          {{/each}}
-        </tbody>
-      </table>
-    </div>
-
     </div>
   </main>
-
 </div>
 
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  // Filter Logic
   const statusFilter = document.getElementById('expenseStatus');
   const rows = document.querySelectorAll('#expenseTable tr');
 
@@ -130,11 +117,9 @@
     });
   });
 
-  // Injected Data from Server
   const expenseStatusCounts = {{{expenseStatusCountsJSON}}};
   const expenseStatusPercentages = {{{expenseStatusPercentagesJSON}}};
 
-  // Pie Chart
   const ctxPie = document.getElementById('statusPieChart').getContext('2d');
   new Chart(ctxPie, {
     type: 'pie',
@@ -148,7 +133,6 @@
     }
   });
 
-  // Bar Chart
   const ctxBar = document.getElementById('statusBarChart').getContext('2d');
   new Chart(ctxBar, {
     type: 'bar',
@@ -160,5 +144,5 @@
         backgroundColor: ['gray', 'green', 'red', 'blue', 'red', 'black']
       }]
     }
-  });
+  });
 </script>

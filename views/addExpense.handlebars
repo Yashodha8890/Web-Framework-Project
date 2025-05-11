@@ -1,9 +1,11 @@
+addExpenses.handlebars
+===================
 
 <div class="container-activityNew">
   <!-- Sidebar -->
-  <nav id="sidebar" class="">
+  <nav id="sidebar" aria-label="Main navigation">
     <div class="sidebar-header p-3">
-      <img src="/images/Logo DRT.jpg" alt="Logo" class="logo-img mb-2">
+      <img src="/images/Logo DRT.jpg" alt="Daily Routing Tracker logo" class="logo-img mb-2" role="img">
       <h4>Daily Routing Tracker</h4>
     </div>
     <ul class="nav flex-column">
@@ -13,7 +15,7 @@
       </li>
 
       <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#activityMenu" role="button">
+        <a class="nav-link" data-bs-toggle="collapse" href="#activityMenu" role="button" aria-expanded="false" aria-controls="activityMenu">
           Activity Tracker
         </a>
         <ul class="collapse list-unstyled ps-3" id="activityMenu">
@@ -23,18 +25,17 @@
       </li>
 
       <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#expenseMenu" role="button">
+        <a class="nav-link" data-bs-toggle="collapse" href="#expenseMenu" role="button" aria-expanded="false" aria-controls="expenseMenu">
           Expense Tracker
         </a>
         <ul class="collapse list-unstyled ps-3" id="expenseMenu">
-          <li><a class="nav-link" href="/addExpense">Expense Log</a></li>
+          <li><a class="nav-link" href="/addExpense" aria-current="page">Expense Log</a></li>
           <li><a class="nav-link" href="/viewExpense">Expense Update</a></li>
-          
         </ul>
       </li>
 
       <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#dashboardMenu" role="button">
+        <a class="nav-link" data-bs-toggle="collapse" href="#dashboardMenu" role="button" aria-expanded="false" aria-controls="dashboardMenu">
           Dashboard
         </a>
         <ul class="collapse list-unstyled ps-3" id="dashboardMenu">
@@ -47,89 +48,83 @@
         <span class="nav-link">Hello!! {{user.userName}}</span>
         <a href="/logout" class="btn btn-sm btn-outline-light mt-2">Logout</a>
       </li>
-
     </ul>
   </nav>
-  
 
   <!-- Main Content -->
   <main class="flex-grow-1 pt-0 pr-8 pb-8 pl-8">
-  <div class="bg-white rounded-2xl shadow-xl p-6 max-w-2xl w-full">
-    <div class="flex justify-between items-center mb-4">
-    <h1 class="text-4xl font-bold">Record Expense</h1>
+    <div class="bg-white rounded-2xl shadow-xl p-6 max-w-2xl w-full">
+      <div class="flex justify-between items-center mb-4">
+        <h1 class="text-4xl font-bold" id="pageTitle">Record Expense</h1>
+      </div>
+
+      <form action="/addExpense" method="POST" aria-labelledby="pageTitle">
+        <div class="mb-4">
+          <label for="amount" class="font-medium">Amount Spent</label>
+          <input type="number" id="amount" name="amount" class="border mt-2 w-full p-2 rounded" placeholder="$" required>
         </div>
 
-    <form action="/addExpense" method="POST"  >
-      
-      <div class="mb-4">
-        <label class="font-medium">Amount Spent</label>
-        <input type="number" name="amount" class="border mt-2 w-full p-2 rounded" placeholder="$">
-        
-      </div>
+        <div class="mb-4">
+          <label for="category" class="font-medium">Category</label>
+          <select id="category" name="category" class="border w-full p-2 mt-2 rounded" required>
+            <option>Food</option>
+            <option>Transport</option>
+            <option>Housing</option>
+            <option>Utilities</option>
+            <option>Entertainment</option>
+            <option>Travel</option>
+            <option>Shopping</option>
+          </select>
+        </div>
 
-      <div class="mb-4">
-        <label class="font-medium">Category</label>
-        <select name="category" class="border w-full p-2 mt-2 rounded">
-          <option>Food</option>
-          <option>Transport</option>
-          <option>Housing</option>
-          <option>Utilities</option>
-          <option>Entertainment</option>
-          <option>Travel</option>
-          <option>Shopping</option>
-        </select>
-        
-      </div>
+        <div class="mb-4">
+          <label for="dueDate" class="font-medium">Due Date</label>
+          <input type="date" id="dueDate" name="dueDate" class="border mt-2 w-full p-2 rounded" required>
+        </div>
 
-      <div class="mb-4">
-        <label class="font-medium">Due Date</label>
-        <input type="date" id="dueDate" class="border mt-2 w-full p-2 rounded" name="dueDate" required><br>
-      </div>
+        <div class="mb-4">
+          <label for="paidDate" class="font-medium">Paid Date</label>
+          <input type="date" id="paidDate" name="paidDate" class="border mt-2 w-full p-2 rounded" aria-describedby="paidDateDesc">
+          <span id="paidDateDesc" class="sr-only">Leave empty if not yet paid</span>
+        </div>
 
-      <div class="mb-4">
-        <label class="font-medium">Paid date</label>
-        <input type="date" id="paidDate" class="border mt-2 w-full p-2 rounded" name="paidDate" ><br>
-      </div>
+        <div class="mb-4">
+          <label for="status" class="font-medium">Payment Status</label>
+          <select id="status" name="status" class="border w-full p-2 mt-2 rounded" required>
+            <option>Planned</option>
+            <option>Due</option>
+            <option>Paid</option>
+            <option>Partialy paid</option>
+            <option>Overdue</option>
+            <option>Cancelled</option>
+          </select>
+        </div>
 
-      <div class="mb-4">
-        <label class="font-medium">Payment status</label>
-        <select name="status" class="border w-full p-2 mt-2 rounded">
-          <option>Planned</option>
-          <option>Due</option>
-          <option>Paid</option>
-          <option>Partialy paid</option>
-          <option>Overdue</option>
-          <option>Cancelled</option>
-        </select>
-      </div>
+        <div class="mb-4">
+          <label for="paymentMethod" class="font-medium">Paid With</label>
+          <select id="paymentMethod" name="paymentMethod" class="border w-full p-2 mt-2 rounded" required>
+            <option>Cash</option>
+            <option>Credit Card</option>
+            <option>Debit Card</option>
+            <option>Bank Transfer</option>
+            <option>Digital Wallet</option>
+          </select>
+        </div>
 
-      <div class="mb-4">
-        <label class="font-medium">Paid With</label>
-        <select name="paymentMethod" class="border w-full p-2 mt-2 rounded">
-          <option>Cash</option>
-          <option>Credit Card</option>
-          <option>Debit Card</option>
-          <option>Bank Transfer</option>
-          <option>Digital Wallet</option>
-        </select>
-      </div>
+        <div class="mb-4">
+          <label for="notes" class="font-medium">Notes <span class="sr-only">(Optional)</span></label>
+          <textarea id="notes" name="notes" class="border w-full p-2 mt-2 rounded" placeholder="E.g. Lunch at Joe’s Diner" aria-describedby="notesHint"></textarea>
+          <div id="notesHint" class="sr-only">You can add any relevant details for this expense</div>
+        </div>
 
-      <div class="mb-4">
-        <label class="font-medium">Notes (Optional)</label>
-        <textarea name="notes" class="border w-full p-2 mt-2 rounded" placeholder="E.g. Lunch at Joe’s Diner"></textarea>
-      </div>
+        <div class="mb-4">
+          <label for="receipt" class="font-medium">Upload Receipt <span class="sr-only">(Optional)</span></label>
+          <input type="file" id="receipt" name="receipt" class="block mt-2" aria-describedby="receiptHint">
+          <div id="receiptHint" class="sr-only">Optional file upload for this expense</div>
+        </div>
 
-      <div class="mb-4">
-        <label class="font-medium">Upload Receipt (Optional)</label>
-        <input type="file" name="receipt" class="block mt-2">
-      </div>
-
-      
-
-      <button type="submit" class="bg-green-600 text-white w-full py-2 rounded-lg hover:bg-green-700">Save Expense</button>
-
-    </form>
-  </main>
-  </div>
-
-  
+        <button type="submit" class="bg-green-600 text-white w-full py-2 rounded-lg hover:bg-green-700">Save Expense</button>
+      </form>
+    </div>
+  </main>
+</div>
