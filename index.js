@@ -10,8 +10,9 @@ const ActivityTypes = require('./models/ActivityTypes');
 const sendEmail = require('./utils/mailer');
 const cron = require('node-cron');
 //added from Shammi's branch
-const viewExpense = require('./models/expenseView');
 const Expense = require('./models/expense');
+const sendDueEmail = require('./utils/sendEmail');
+
 
 //const { default: mongoose } = require('mongoose');
 const app = express();
@@ -157,23 +158,34 @@ app.get('/expenseDashboard', async (req, res) => {
     }
   });
 
-//add expense data to database
+
 app.post('/addExpense', async(req,res) => {
-    try
-    {
-        const newExpenses = new Expense(req.body)
-        await newExpenses.save();
-        //res.send('added expense!!');
-        res.redirect('/viewExpense');
-    }
+  try{
+      if (!req.session.user) {
+          return res.status(400).send('User not logged in');
+      }
       
-    catch(err)
-    {
-        console.log(err);
-        res.status(500).send('Error expense add!!')
-    }
-    
-})
+      const newExpenses = new Expense({
+        amount: req.body.amount,
+        category: req.body.category,
+        dueDate: req.body.dueDate,
+        paidDate: req.body.paidDate,
+        status:req.body.status,
+        paymentMethod: req.body.paymentMethod,
+        notes: req.body.notes,
+        userId: req.session.user._id,  
+        });
+      await newExpenses.save();
+       res.redirect('viewExpense');
+  }
+  catch(err)
+  {
+      console.log(err);
+      res.status(500).send('Error saving new activity!!')
+  }   
+});
+
+
 //get all expenses from MongoDB and print to the webpage
 app.get('/viewExpense', async (req, res) => {
     try {
@@ -184,6 +196,7 @@ app.get('/viewExpense', async (req, res) => {
         expenses: expenses
         }
     )
+    
     } 
     catch (error) 
         {
@@ -197,6 +210,7 @@ app.get('/updateExpense/:id', async (req, res) => {
     try {
       const expense = await Expense.findById(req.params.id).lean();
       if (!expense) return res.status(404).send('Expense not found');
+
       res.render('updateExpense', { expense });
     } catch (err) {
       res.status(500).send('Server Error');
@@ -206,6 +220,7 @@ app.get('/updateExpense/:id', async (req, res) => {
   //  update the expenses in view page
 app.post('/updateExpense/:id', async (req, res) => {
     try {
+      
       await Expense.findByIdAndUpdate(req.params.id, {
         amount: req.body.amount,
         category: req.body.category,
@@ -213,7 +228,8 @@ app.post('/updateExpense/:id', async (req, res) => {
         paidDate: req.body.paidDate,
         status:req.body.status,
         paymentMethod: req.body.paymentMethod,
-        notes: req.body.notes
+        notes: req.body.notes,
+        userId: req.session.user._id,
       });
       res.redirect('/viewExpense');
     } catch (err) {
@@ -232,6 +248,72 @@ app.post('/deleteExpense/:id', async (req, res) => {
       res.status(500).send('Failed to delete expense');
     }
   });
+
+
+//Send email to remind due dates of payments
+cron.schedule('0 0 * * *', async () => { //job is running everyday at midnight
+//cron.schedule('*/1 * * * *', async () => { // Runs every 1 m
+  console.log('Running expense due date reminder check...');
+
+  const now = new Date();
+  const currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // Today at midnight
+  const tomorrowDate = new Date(currentDate);
+  tomorrowDate.setDate(currentDate.getDate() + 1); // Set to the next day (midnight)
+  
+  try {
+    const dueExpensesToday = await Expense.find({
+      dueDate: { $gte: currentDate, $lt: tomorrowDate },
+      status: 'Due',
+      emailSent: false
+    });
+    
+    console.log(`Found ${dueExpensesToday.length} expenses due today.`);
+
+    for (const expense of dueExpensesToday) {  
+      if (!expense.userId) {
+        console.log(`❌ No userId for expense ${expense._id}`);
+        continue;
+      }
+
+      const user = await UserRegistration.findById(expense.userId);
+      if (!user || !user.email) {
+        console.log(`❌ No email for user ${expense.userId}`);
+        continue;
+      }
+
+      const emailBody = `
+        <h2>Hello!</h2>
+        <p>This is a reminder that the following expense is due:</p>
+        <ul>
+          <li><strong>Amount:</strong> $${expense.amount}</li>  <!-- Corrected this line -->
+          <li><strong>Category:</strong> ${expense.category}</li>
+          <li><strong>Due Date:</strong> ${new Date(expense.dueDate).toDateString()}</li>
+          <li><strong>Status:</strong> ${expense.status}</li>
+          <li><strong>Payment Method:</strong> ${expense.paymentMethod}</li>
+        </ul>
+        <p>Please update your expense status if this has been paid or rescheduled.</p>
+        <p>Regards,<br>Your Daily Routing Tracker Team</p>
+      `;
+
+      try {
+        await sendDueEmail(user.email, 'Expense Due Reminder', emailBody);
+        expense.emailSent = true;
+        await expense.save();
+        
+
+        console.log(`✅ Email sent and updated for expense ${expense._id}`);
+      } catch (err) {
+        console.error(`❌ Error sending email for expense ${expense._id}:`, err);
+      }
+    }
+
+    console.log(`✅ Checked ${dueExpensesToday.length} due expenses.`);
+  } catch (err) {
+    console.error('❌ Error checking due expenses:', err);
+  }
+});
+
+//////////////////////////////////////////////////////////////////////////////////
 //Shammi's branch changes are finished here
 
 
@@ -456,9 +538,10 @@ app.post('/updateActivityStatus/:id', async (req, res) => {
     }
 });
 
+
 //Send email for expired activity
- // cron.schedule('0 0 * * *', async () => { //job is running everyday at midnight
-    cron.schedule('*/1 * * * *', async () => { //job is running every 1 minute. added for the testing purpose
+    cron.schedule('0 0 * * *', async () => { //job is running everyday at midnight
+    //cron.schedule('*/1 * * * *', async () => { //job is running every 1 minute. added for the testing purpose
     console.log('Running daily cron job to check expired activities...');
     const now = new Date();
   
