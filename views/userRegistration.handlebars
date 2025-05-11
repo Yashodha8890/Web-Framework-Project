@@ -1,40 +1,51 @@
-
 <body class="registration-page">
-  <div class="registration-container">
-    <img src="/images/Logo DRT.jpg" alt="Logo">
-    <h2>Register Here</h2>
-    <form action="/users" method="post">
-      <label for="fname">First name:</label>
-      <input type="text" id="fname" name="firstName" required>
+  <div class="registration-container" role="main" aria-labelledby="registrationTitle">
+    <img src="/images/Logo DRT.jpg" alt="DRT Company Logo" />
 
-      <label for="lname">Last name:</label>
-      <input type="text" id="lname" name="lastName" required>
+    <h2 id="registrationTitle">Register Here</h2>
 
-      <label for="email">Email Address:</label>
-      <input type="email" id="email" name="email" required>
+    <form action="/users" method="post" aria-describedby="formInstructions">
+      <p id="formInstructions">All fields marked with an asterisk (*) are required.</p>
 
-      <label for="phone">Mobile number:</label>
-      <input type="tel" id="phone" name="mobileNumber" pattern="[0-9]{10}" required>
+      <fieldset>
+        <legend>Personal Information</legend>
 
-      <label for="birthday">Birthday:</label>
-      <input type="date" id="birthday" name="birthDay" required>
+        <label for="fname">First name: <span aria-hidden="true">*</span></label>
+        <input type="text" id="fname" name="firstName" required aria-required="true" aria-labelledby="fname">
 
-      <label for="gender">Gender:</label>
-      <select name="gender" id="gender" required>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-      </select>
+        <label for="lname">Last name: <span aria-hidden="true">*</span></label>
+        <input type="text" id="lname" name="lastName" required aria-required="true" aria-labelledby="lname">
 
-      <label for="userName">User Name:</label>
-      <input type="text" id="userName" name="userName" required>
+        <label for="email">Email Address: <span aria-hidden="true">*</span></label>
+        <input type="email" id="email" name="email" required aria-required="true" aria-labelledby="email">
 
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required>
+        <label for="phone">Mobile number: <span aria-hidden="true">*</span></label>
+        <input type="tel" id="phone" name="mobileNumber" pattern="[0-9]{10}" required aria-required="true" aria-labelledby="phone">
 
-      <input type="submit" value="Save">
-      <input type="reset" value="Reset">
+        <label for="birthday">Birthday: <span aria-hidden="true">*</span></label>
+        <input type="date" id="birthday" name="birthDay" required aria-required="true" aria-labelledby="birthday">
+
+        <label for="gender">Gender: <span aria-hidden="true">*</span></label>
+        <select name="gender" id="gender" required aria-required="true" aria-labelledby="gender">
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+      </fieldset>
+
+      <fieldset>
+        <legend>Account Information</legend>
+
+        <label for="userName">User Name: <span aria-hidden="true">*</span></label>
+        <input type="text" id="userName" name="userName" required aria-required="true" aria-labelledby="userName">
+
+        <label for="password">Password: <span aria-hidden="true">*</span></label>
+        <input type="password" id="password" name="password" required aria-required="true" aria-labelledby="password">
+      </fieldset>
+
+      <input type="submit" value="Save" aria-label="Submit registration form">
+      <input type="reset" value="Reset" aria-label="Reset form fields">
     </form>
 
-    <a href="/" class="back-btn">Back</a>
+    <a href="/" class="back-btn" aria-label="Back to homepage">Back</a>
   </div>
 </body>
