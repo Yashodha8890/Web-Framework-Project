@@ -2,8 +2,8 @@
   <!-- Sidebar -->
   <nav id="sidebar" class="">
     <div class="sidebar-header p-3">
-      <img src="/images/Logo DRT.jpg" alt="Logo" class="logo-img mb-2">
-      <h4>Daily Routing Tracker</h4>
+      <img src="/images/Logo DRT.jpg" alt="Logo" class="logo-img mb-2" style="width: 250px; height: auto;">
+      <h3 style="font-size: 24px; font-weight: bold;">Daily Routing Tracker</h3>
     </div>
     <ul class="nav flex-column">
 
@@ -59,12 +59,15 @@
     <!-- Charts -->
     <div class="row">
       <div class="col-md-4">
+        <h3 style="font-weight: bold;">Pie Chart: Expense Status Distribution</h3>
         <canvas id="statusPieChart" ></canvas>
-      </div>
-      <div class="col-md-2">
         
       </div>
-      <div class="col-md-6">
+      <div class="col-md-4">
+        
+      </div>
+      <div class="col-md-4">
+        <h3 style="font-weight: bold;">Expense Status Percentages</h3>
         <canvas id="statusBarChart" ></canvas>
       </div>
     </div>
@@ -77,7 +80,6 @@
         <option value="Planned">Planned</option>
         <option value="Due">Due</option>
         <option value="Paid">Paid</option>
-        <option value="Partially paid">Partially paid</option>
         <option value="Overdue">Overdue</option>
         <option value="Cancelled">Cancelled</option>
       </select>
