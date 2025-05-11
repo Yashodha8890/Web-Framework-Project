@@ -26,7 +26,7 @@ const expenseSchema = new mongoose.Schema({
 
     status: {
         type: String,
-        enum: ['Planned', 'Due', 'Paid', 'Partially paid', 'Overdue', 'Cancelled'],
+        enum: ['Planned', 'Due', 'Paid',  'Overdue', 'Cancelled'],
         default: 'Planned'
       },
 
@@ -43,6 +43,17 @@ const expenseSchema = new mongoose.Schema({
     receipt: {
         type: String // For storing file path or file URL if you handle uploads
     },
+
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+        required: true
+      },
+
+      emailSent: {
+        type: Boolean,
+        default: false
+      }
     
 });
 
