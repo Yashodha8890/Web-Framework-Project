@@ -1,98 +1,90 @@
 <div class="d-flex">
   <!-- Sidebar -->
-  <nav id="sidebar" class="">
+  <nav id="sidebar" role="navigation" aria-label="Main navigation">
     <div class="sidebar-header p-3">
-      <img src="/images/Logo DRT.jpg" alt="Logo" class="logo-img mb-2">
-      <h4>Daily Routing Tracker</h4>
+      <img src="/images/Logo DRT.jpg" alt="Daily Routine Tracker logo" class="logo-img mb-2">
+      <h4 id="site-title">Daily Routing Tracker</h4>
     </div>
-    <ul class="nav flex-column">
+    <ul class="nav flex-column" aria-labelledby="site-title">
 
       <li class="nav-item">
-        <a class="nav-link" href="/home">Home</a>
+        <a class="nav-link" href="/home" aria-label="Home page">Home</a>
       </li>
 
       <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#activityMenu" role="button">
+        <a class="nav-link" data-bs-toggle="collapse" href="#activityMenu" role="button" aria-expanded="false" aria-controls="activityMenu" aria-label="Toggle Activity Tracker menu">
           Activity Tracker
         </a>
         <ul class="collapse list-unstyled ps-3" id="activityMenu">
-          <li><a class="nav-link" href="/activity">Activity Log</a></li>
-          <li><a class="nav-link" href="/updateActivity">Activity Update</a></li>
+          <li><a class="nav-link" href="/activity" aria-label="Activity Log">Activity Log</a></li>
+          <li><a class="nav-link" href="/updateActivity" aria-label="Activity Update">Activity Update</a></li>
         </ul>
       </li>
 
       <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#expenseMenu" role="button">
+        <a class="nav-link" data-bs-toggle="collapse" href="#expenseMenu" role="button" aria-expanded="false" aria-controls="expenseMenu" aria-label="Toggle Expense Tracker menu">
           Expense Tracker
         </a>
         <ul class="collapse list-unstyled ps-3" id="expenseMenu">
-          <li><a class="nav-link" href="/addExpense">Expense Log</a></li>
-          <li><a class="nav-link" href="/viewExpense">Expense Update</a></li>
+          <li><a class="nav-link" href="/addExpense" aria-label="Expense Log">Expense Log</a></li>
+          <li><a class="nav-link" href="/viewExpense" aria-label="Expense Update">Expense Update</a></li>
         </ul>
       </li>
 
       <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#dashboardMenu" role="button">
+        <a class="nav-link" data-bs-toggle="collapse" href="#dashboardMenu" role="button" aria-expanded="false" aria-controls="dashboardMenu" aria-label="Toggle Dashboard menu">
           Dashboard
         </a>
         <ul class="collapse list-unstyled ps-3" id="dashboardMenu">
-          <li><a class="nav-link" href="/activityDashboard">Activity Dashboard</a></li>
-          <li><a class="nav-link" href="/dashboard/expense">Expense Dashboard</a></li>
+          <li><a class="nav-link" href="/activityDashboard" aria-label="Activity Dashboard">Activity Dashboard</a></li>
+          <li><a class="nav-link" href="/dashboard/expense" aria-label="Expense Dashboard">Expense Dashboard</a></li>
         </ul>
       </li>
 
       <li class="nav-item mt-3">
-        <span class="nav-link">Hello!! {{user.userName}}</span>
-        <a href="/logout" class="btn btn-sm btn-outline-light mt-2">Logout</a>
+        <span class="nav-link" aria-label="Greeting">Hello!! {{user.userName}}</span>
+        <a href="/logout" class="btn btn-sm btn-outline-light mt-2" aria-label="Logout">Logout</a>
       </li>
 
     </ul>
   </nav>
 
-   {{!--  <header class="home-header">
-        <div class="logo-section">
-            <img src="/images/Logo DRT.jpg" alt="Daily Routing Logo" class="logo-img">
-           
-        </div>
-        <div class="logout-section">
-            <label>You haved logged in as {{user.userName}}</label>
-           <!-- <button class="logout-button">Logout</button>-->
-            <a href="/logout"><button class="logout-button">Logout</button></a>
-        </div>
-    </header> --}}
+  <main class="home-main" role="main" aria-labelledby="welcome-heading">
+    <h1 id="welcome-heading" tabindex="-1">Welcome to Daily Routing Tracker</h1>
+    <p class="intro-text">
+      Daily Routine Tracker is a personal productivity web application designed to help you stay organized, manage your time, and keep track of your day-to-day life.
+      With two core features — Activity Tracker and Expense Tracker — this app empowers you to build better habits, monitor your financials, and improve your daily routine.<br>
 
-    <main class="home-main">
-        <h1>Welcome to Daily Routing Tracker</h1>
-        <p class="intro-text">
-            Daily Routine Tracker is a personal productivity web application designed to help you stay organized, manage your time, and keep track of your day-to-day life.
-With two core features — Activity Tracker and Expense Tracker — this app empowers you to build better habits, monitor your financials, and improve your daily routine.<br>
+      ✅ Activity Tracker: Plan and manage your daily or occasional tasks such as workouts, reading, or meetings. Update progress and stay on top of your goals with reminders and summary views.<br>
 
-✅ Activity Tracker: Plan and manage your daily or occasional tasks such as workouts, reading, or meetings. Update progress and stay on top of your goals with reminders and summary views.<br>
+      💰 Expense Tracker: Record your income and expenses, track pending payments, and get insights into your financial habits.<br>
 
-💰 Expense Tracker: Record your income and expenses, track pending payments, and get insights into your financial habits.<br>
+      All your progress is visualized in a clean and simple Dashboard, showing weekly and monthly summaries of your activities and expenses — helping you stay motivated and in control.<br><br>
+    </p>
 
-All your progress is visualized in a clean and simple Dashboard, showing weekly and monthly summaries of your activities and expenses — helping you stay motivated and in control.<br><br>
-        </p>
+    <!-- Cards in a single row using flex with appropriate width settings -->
+    <div class="card-container" role="region" aria-label="Feature options">
+  <div class="card" role="group" aria-label="Activity Tracker">
+    <img src="/images/Activity.jpg" alt="Illustration representing activities like planning and tracking" class="card-img">
+    <a class="card-button" href="/activity" aria-label="Navigate to Activity Tracker">Track your activities</a>
+  </div>
 
-        <div class="card-container">
-            <div class="card">
-                <img src="/images/Activity.jpg" alt="Activities" class="card-img">
-                <!--<button class="card-button" href="http://localhost:3000/activityTracker">Track your activities</button>-->
-                <a class="card-button" href="/activity">Track your activities</a>
-            </div>
-            <div class="card">
-                <img src="/images/finance.jpg" alt="Money" class="card-img">
-                <button class="card-button">Track your Money</button>
-            </div>
-            <div class="card">
-                <img src="/images/dashboard.jpg" alt="Dashboard" class="card-img">
-                <a class="card-button" href="/activityDashBoard">Activity Dashboard</a>
-            </div>
-            <div class="card">
-                <img src="/images/financeDashboard.jpg" alt="Dashboard" class="card-img">
-                <a class="card-button" href="/expenseDashBoard">Expenses Dashboard</a>
-            </div>
-        </div>
-    </main>
+  <div class="card" role="group" aria-label="Finance Tracker">
+    <img src="/images/finance.jpg" alt="Illustration representing financial tracking and budgeting" class="card-img">
+    <button class="card-button" aria-label="Open Finance Tracker (button only, not a link)">Track your Money</button>
+  </div>
+
+  <div class="card" role="group" aria-label="Activity Dashboard">
+    <img src="/images/dashboard.jpg" alt="Dashboard preview showing charts for activity tracking" class="card-img">
+    <a class="card-button" href="/activityDashBoard" aria-label="Open Activity Dashboard">Activity Dashboard</a>
+  </div>
+
+  <div class="card" role="group" aria-label="Expense Dashboard">
+    <img src="/images/financeDashboard.jpg" alt="Dashboard preview showing financial data" class="card-img">
+    <a class="card-button" href="/expenseDashBoard" aria-label="Open Expense Dashboard">Expenses Dashboard</a>
+  </div>
+</div>
 
 
+  </main>
+</div>
