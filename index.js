@@ -564,14 +564,10 @@ app.post('/updateActivityStatus/:id', async (req, res) => {
 
 
 //Send email for expired activity
-
-    cron.schedule('0 0 * * *', async () => { //job is running everyday at midnight
-    //cron.schedule('*/1 * * * *', async () => { //job is running every 1 minute. added for the testing purpose
-    console.log('Running daily cron job to check expired activities...');
-    const now = new Date();
-
-
-  
+ cron.schedule('0 0 * * *', async () => { //job is running everyday at midnight
+ //cron.schedule('*/1 * * * *', async () => { //job is running every 1 minute. added for the testing purpose
+ console.log('Running daily cron job to check expired activities!!');
+ const now = new Date();  
     try {
         // Check activities with planned date is before today's date and emailSent is false from the db
       const expiredActivities = await Activity.find({

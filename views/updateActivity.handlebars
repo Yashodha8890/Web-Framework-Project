@@ -1,114 +1,101 @@
 <div class="d-flex">
   <!-- Sidebar -->
-  <nav id="sidebar" class="">
+  <nav id="sidebar" aria-label="Main navigation">
     <div class="sidebar-header p-3">
-      <img src="/images/Logo DRT.jpg" alt="Logo" class="logo-img mb-2">
-      <h4>Daily Routing Tracker</h4>
+      <img src="/images/Logo DRT.jpg" alt="Daily Routing Tracker Logo" class="logo-img mb-2">
+      <h1 class="h4" id="site-title">Daily Routing Tracker</h1>
     </div>
-    <ul class="nav flex-column">
-
-      <li class="nav-item">
-        <a class="nav-link" href="/">Home</a>
+    <ul class="nav flex-column" role="menubar" aria-labelledby="site-title">
+      <li class="nav-item" role="none">
+        <a class="nav-link" role="menuitem" href="/" aria-label="Go to Home Page">Home</a>
       </li>
 
-      <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#activityMenu" role="button">
-          Activity Tracker
-        </a>
-        <ul class="collapse list-unstyled ps-3" id="activityMenu">
-          <li><a class="nav-link" href="/activity">Activity Log</a></li>
-          <li><a class="nav-link" href="/updateActivity">Activity Update</a></li>
+      <li class="nav-item" role="none">
+        <a class="nav-link" data-bs-toggle="collapse" href="#activityMenu" role="button" aria-expanded="true" aria-controls="activityMenu">Activity Tracker</a>
+        <ul class="collapse show list-unstyled ps-3" id="activityMenu" role="menu" aria-label="Activity Tracker Menu">
+          <li><a class="nav-link" role="menuitem" href="/activity">Activity Log</a></li>
+          <li><a class="nav-link" role="menuitem" href="/updateActivity" aria-current="page">Activity Update</a></li>
         </ul>
       </li>
 
-      <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#expenseMenu" role="button">
-          Expense Tracker
-        </a>
-        <ul class="collapse list-unstyled ps-3" id="expenseMenu">
-          <li><a class="nav-link" href="/addExpense">Expense Log</a></li>
-          <li><a class="nav-link" href="/viewExpense">Expense Update</a></li>
+      <li class="nav-item" role="none">
+        <a class="nav-link" data-bs-toggle="collapse" href="#expenseMenu" role="button" aria-expanded="false" aria-controls="expenseMenu">Expense Tracker</a>
+        <ul class="collapse list-unstyled ps-3" id="expenseMenu" role="menu" aria-label="Expense Tracker Menu">
+          <li><a class="nav-link" role="menuitem" href="/addExpense">Expense Log</a></li>
+          <li><a class="nav-link" role="menuitem" href="/viewExpense">Expense Update</a></li>
         </ul>
       </li>
 
-      <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#dashboardMenu" role="button">
-          Dashboard
-        </a>
-        <ul class="collapse list-unstyled ps-3" id="dashboardMenu">
-          <li><a class="nav-link" href="/activityDashboard">Activity Dashboard</a></li>
-          <li><a class="nav-link" href="/expenseDashboard">Expense Dashboard</a></li>
+      <li class="nav-item" role="none">
+        <a class="nav-link" data-bs-toggle="collapse" href="#dashboardMenu" role="button" aria-expanded="false" aria-controls="dashboardMenu">Dashboard</a>
+        <ul class="collapse list-unstyled ps-3" id="dashboardMenu" role="menu" aria-label="Dashboard Menu">
+          <li><a class="nav-link" role="menuitem" href="/activityDashboard">Activity Dashboard</a></li>
+          <li><a class="nav-link" role="menuitem" href="/expenseDashboard">Expense Dashboard</a></li>
         </ul>
       </li>
 
-      <li class="nav-item mt-3">
-        <span class="nav-link">Hello!! {{user.userName}}</span>
-        <a href="/logout" class="btn btn-sm btn-outline-light mt-2">Logout</a>
+      <li class="nav-item mt-3" role="none">
+        <span class="nav-link" role="text">Hello!! {{user.userName}}</span>
+        <a href="/logout" class="btn btn-sm btn-outline-light mt-2" role="button">Logout</a>
       </li>
     </ul>
   </nav>
 
+  <!-- Main Content -->
+  <main class="update-activity-container" role="main" aria-labelledby="updateActivityTitle">
+    <h2 id="updateActivityTitle">Update Activity</h2>
+    <form action="/updateActivity/{{activity._id}}" method="POST" class="update-form" aria-describedby="updateActivityDesc">
+      <p id="updateActivityDesc" class="visually-hidden">Use this form to update the details of your selected activity.</p>
 
-<div class="update-activity-container">
-    <h2>Update Activity</h2>
-    <form action="/updateActivity/{{activity._id}}" method="POST" class="update-form">
-        <div class="form-group">
-            <label>Activity Name:
-                <input type="text" name="activityName" value="{{activity.activityName}}" required>
-            </label>
-        </div>
+      <div class="form-group">
+        <label for="activityName">Activity Name:</label>
+        <input type="text" id="activityName" name="activityName" value="{{activity.activityName}}" required>
+      </div>
 
-        <div class="form-group">
-            <label>Description:
-                <textarea name="activityDescription" required>{{activity.activityDescription}}</textarea>
-            </label>
-        </div>
+      <div class="form-group">
+        <label for="activityDescription">Description:</label>
+        <textarea id="activityDescription" name="activityDescription" required>{{activity.activityDescription}}</textarea>
+      </div>
 
-        <div class="form-group">
-            <label>Planned Date:
-                <input type="date" name="ActivityPlannedDate" value="{{activity.ActivityPlannedDateFormatted}}" required>
-            </label>
-        </div>
+      <div class="form-group">
+        <label for="plannedDate">Planned Date:</label>
+        <input type="date" id="plannedDate" name="ActivityPlannedDate" value="{{activity.ActivityPlannedDateFormatted}}" required>
+      </div>
 
-        <div class="form-group">
-            <label>Start Time:
-                <input type="time" name="ActivityStartTime" value="{{activity.ActivityStartTime}}" required>
-            </label>
-        </div>
+      <div class="form-group">
+        <label for="startTime">Start Time:</label>
+        <input type="time" id="startTime" name="ActivityStartTime" value="{{activity.ActivityStartTime}}" required>
+      </div>
 
-        <div class="form-group">
-            <label>End Time:
-                <input type="time" name="ActivityEndTime" value="{{activity.ActivityEndTime}}" required>
-            </label>
-        </div>
+      <div class="form-group">
+        <label for="endTime">End Time:</label>
+        <input type="time" id="endTime" name="ActivityEndTime" value="{{activity.ActivityEndTime}}" required>
+      </div>
 
-        <div class="form-group">
-            <label>Status:
-                <input type="text" class="readonly-field" name="activityStatus" value="{{activity.activityStatus}}" readonly>
-            </label>
-        </div>
+      <div class="form-group">
+        <label for="status">Status:</label>
+        <input type="text" id="status" class="readonly-field" name="activityStatus" value="{{activity.activityStatus}}" readonly aria-readonly="true">
+      </div>
 
-        <div class="form-group">
-            <label>Category:
-                <input type="text" class="readonly-field" name="activityCatergory" value="{{activity.activityCatergory}}" readonly>
-            </label>
-        </div>
+      <div class="form-group">
+        <label for="category">Category:</label>
+        <input type="text" id="category" class="readonly-field" name="activityCatergory" value="{{activity.activityCatergory}}" readonly aria-readonly="true">
+      </div>
 
-        <div class="form-group">
-            <label>Type:
-                <input type="text" class="readonly-field" name="activityType" value="{{activity.activityType}}" readonly>
-            </label>
-        </div>
+      <div class="form-group">
+        <label for="type">Type:</label>
+        <input type="text" id="type" class="readonly-field" name="activityType" value="{{activity.activityType}}" readonly aria-readonly="true">
+      </div>
 
-        <div class="form-group">
-            <label>Priority:
-                <input type="text" class="readonly-field" name="activityPriority" value="{{activity.activityPriority}}" readonly>
-            </label>
-        </div>
+      <div class="form-group">
+        <label for="priority">Priority:</label>
+        <input type="text" id="priority" class="readonly-field" name="activityPriority" value="{{activity.activityPriority}}" readonly aria-readonly="true">
+      </div>
 
-        <div class="form-actions">
-            <button type="submit" class="btn-update">Update Activity</button>
-            <a href="/activity" class="btn-cancel">Cancel</a>
-        </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-update" aria-label="Submit form to update activity">Update Activity</button>
+        <a href="/activity" class="btn-cancel" role="button" aria-label="Cancel and return to Activity Log">Cancel</a>
+      </div>
     </form>
+  </main>
 </div>
